@@ -1,0 +1,9 @@
+---
+- name: Test connections to windows hosts
+  hosts: windows
+  tasks:
+    - name: Check access
+      win_ping:
+  become: yes
+  become_user: bootstrap
+
