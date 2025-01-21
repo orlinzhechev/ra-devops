@@ -1,0 +1,56 @@
+---
+- name: Ensure the Visual Studio Installer is installed
+  win_chocolatey:
+    name: visualstudio-installer
+    state: present
+
+- name: Install Visual Studio 2022 Community edition using Choco
+  win_chocolatey:
+    name: visualstudio2022community
+    state: present
+
+- name: Add .NET Core Tools Workload
+  win_command: >
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vs_installer.exe"
+    modify --productId "Microsoft.VisualStudio.Product.Community"
+    --channelUri "https://aka.ms/vs/17/release/channel"
+    --add Microsoft.VisualStudio.Workload.NetCoreTools
+    --quiet --norestart
+  args:
+    creates: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\NetCoreTools"
+
+- name: Verify if .NET Core Tools were successfully added
+  win_file:
+    path: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\NetCoreTools"
+    state: directory
+
+- name: Add Managed Desktop Workload
+  win_command: >
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vs_installer.exe"
+    modify --productId "Microsoft.VisualStudio.Product.Community"
+    --channelUri "https://aka.ms/vs/17/release/channel"
+    --add Microsoft.VisualStudio.Workload.ManagedDesktop
+    --quiet --norestart
+  args:
+    creates: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\ManagedDesktop"
+
+- name: Verify if Managed Desktop Workload was successfully added
+  win_file:
+    path: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\ManagedDesktop"
+    state: directory
+
+- name: Add ASP.NET and Web Development Workload
+  win_command: >
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vs_installer.exe"
+    modify --productId "Microsoft.VisualStudio.Product.Community"
+    --channelUri "https://aka.ms/vs/17/release/channel"
+    --add Microsoft.VisualStudio.Workload.NetWeb
+    --quiet --norestart
+  args:
+    creates: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\NetWeb"
+
+- name: Verify if ASP.NET and Web Development Workload was successfully added
+  win_file:
+    path: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\NetWeb"
+    state: directory
+

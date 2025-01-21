@@ -1,0 +1,24 @@
+---
+- name: Install .NET Framework 3.5 runtime using DISM
+  ansible.windows.win_shell: DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /NoRestart
+  register: netfx3_result
+
+- name: Output .NET Framework 3.5 installation result
+  ansible.builtin.debug:
+    var: netfx3_result
+
+- name: Fail if .NET Framework 3.5 installation failed
+  ansible.builtin.fail:
+    msg: ".NET Framework 3.5 installation failed: {{ netfx3_result.stdout }}"
+  when: netfx3_result.rc != 0
+
+- name: Install .NET Framework 3.5 Development Tools using Chocolatey
+  win_chocolatey:
+    name: DotNet3.5
+    state: present
+
+- name: Install Microsoft Build Tools using Chocolatey
+  win_chocolatey:
+    name: microsoft-build-tools
+    state: present
+

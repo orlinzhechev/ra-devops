@@ -1,0 +1,6 @@
+---
+- name: Install NuGet CLI using Chocolatey
+  win_chocolatey:
+    name: nuget.commandline
+    state: present
+

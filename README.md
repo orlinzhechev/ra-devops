@@ -23,7 +23,7 @@ There is an ongoing debate regarding the preferred access method for Ansible: SS
    `Connection successful`
 6. Test Ansible access:  
    `cd ansible`  
-   `ansible-playbook -i inventory.yml ping.yml`  
+   `ansible-playbook -i inventory.ini ping.yml`  
    Expected output:  
 
     ```
@@ -40,35 +40,11 @@ There is an ongoing debate regarding the preferred access method for Ansible: SS
 
     ```
 
-7. Run the `initial_setup.yml` playbook. It installs GitBASH and tests it works fine
+7. Run the `build_win.yml` playbook. It installs all needed software to build ReconArt.sln
    `cd ansible`
-   `ansible-playbook -i inventory.yml initial_setup.yml'
-   Expected output:
+   `ansible-playbook -i inventory.ini build_win.yml'
 
-   ```
-   PLAY [Test connections to windows hosts and install Git Bash] *************************************************
+# TODO
+1. Still working on ReconArt After Commit. It uses 2022. It builds another solution. We still have probelm with WiX setup
 
-   TASK [Gathering Facts] ****************************************************************************************
-   ok: [windows]
-
-   TASK [Check access] *******************************************************************************************
-   ok: [windows]
-
-   TASK [Install Git Bash via Chocolatey] ************************************************************************
-   ok: [windows]
-
-   TASK [Ensure Git is in the PATH] ******************************************************************************
-   ok: [windows]
-
-   TASK [Check Git version] **************************************************************************************
-   changed: [windows]
-
-   TASK [Show Git version] ***************************************************************************************
-   ok: [windows] => {
-       "git_version.stdout": "git version 2.47.1.windows.1\n"
-   }
-
-   PLAY RECAP ****************************************************************************************************
-   windows                    : ok=6    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-   ```
-
+2. Production build uses VS 2017 (v15). So need to add installation steps for vs2015 as well

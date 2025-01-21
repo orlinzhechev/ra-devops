@@ -1,0 +1,12 @@
+---
+- name: Install .NET SDK via Chocolatey
+  win_chocolatey:
+    name: dotnet-sdk
+    state: present
+
+- name: Install .NET Framework 4.6 Developer Pack via Chocolatey
+  win_chocolatey:
+    name: netfx-4.6-devpack
+    state: present
+    source: https://chocolatey.org/api/v2/
+

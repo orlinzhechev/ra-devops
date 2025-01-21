@@ -1,0 +1,23 @@
+---
+- name: Install windows build machines
+  hosts: build_win
+  become: yes
+  become_user: bootstrap
+
+  vars:
+    ansible_user: bootstrap
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+    ansible_connection: ssh
+    ansible_remote_tmp: C:\\ansible_temp
+    ansible_shell_type: powershell
+    ansible_shell_executable: powershell
+    ansible_python_interpreter: C:\\Python313\\python.exe
+
+  tasks:
+    - name: Check access
+      win_ping:
+
+  roles:
+    - common-win
+    - build-win
+

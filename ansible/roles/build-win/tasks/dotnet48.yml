@@ -1,0 +1,22 @@
+---
+- name: Install .NET SDK via Chocolatey
+  win_chocolatey:
+    name: dotnet-sdk
+    state: present
+
+- name: Install .NET 9.0 SDK via Chocolatey
+  win_chocolatey:
+    name: dotnet-9.0-sdk
+    state: present
+
+- name: Install .NET Framework 4.8 Developer Pack via Chocolatey
+  win_chocolatey:
+    name: netfx-4.8.1
+    state: present
+
+- name: Install .NET Framework 4.8 Development Tools
+  win_chocolatey:
+    name: netfx-4.8-devpack
+    state: present
+    source: https://chocolatey.org/api/v2/
+

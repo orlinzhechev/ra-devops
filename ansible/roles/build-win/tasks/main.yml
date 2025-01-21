@@ -1,0 +1,8 @@
+---
+- include_tasks: vs2019.yml
+- include_tasks: vs2022.yml
+- include_tasks: dotnet35.yml
+- include_tasks: dotnet46.yml
+- include_tasks: dotnet48.yml
+- include_tasks: nuget.yml
+- include_tasks: wix.yml
