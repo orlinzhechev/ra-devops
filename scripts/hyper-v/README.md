@@ -22,11 +22,11 @@
 .\Fetch-VM-Config.ps1 win11 prasof10 -GenerateTemplate
 ```
 
-## To Create a VM based on the template-config.json
+## To Create a VM based on the config-template.json
 ```
 .\Create-VM.ps1 -VMName "win11" -HyperVServer "localhost" -TargetDisk "C:\Hyper-V"
 ```
-.\Create-VM.ps1 -VMName "win11" -HyperVServer "PRASOF10" -TargetDisk "E:\Hyper-V" -ConfigFile ".\template-config.json.prasof10"
+.\Create-VM.ps1 -VMName "win11" -HyperVServer "PRASOF10" -TargetDisk "E:\Hyper-V" -ConfigFile ".\config-template.json.prasof10"
 
 
 ## Steps to Create a VM based on the Structure of an existing one
@@ -34,22 +34,22 @@ That approach allows to create a template from an existing machine and use it to
 
 1. First create the template based on an existing machine. No need to stop the VM to fetch the configuration
 ```
-.\Fetch-VM-Config.ps1 VRASOF10DB1 prasof10 -GenerateTemplate -OutputFile template-config.json
+.\Fetch-VM-Config.ps1 VRASOF10DB1 prasof10 -GenerateTemplate -OutputFile config-template.json
 ```
 
 2. Check the generated template
 ```
-cat .\output\template-config.json
+cat .\output\config-template.json
 ```
 
 3. Execute the script in Dry Run mode to check if everything will be created as expected
 
 ```
-.\Create-VM.ps1 -VMName "win-testdb" -HyperVServer "prasof10" -TargetDisk "E:\Hyper-V" -ConfigFile .\output\template-config.json -DryRun
+.\Create-VM.ps1 -VMName "win-testdb" -HyperVServer "prasof10" -TargetDisk "E:\Hyper-V" -ConfigFile .\output\config-template.json -DryRun
 ```
 
 4. Final execution
 ```
-.\Create-VM.ps1 -VMName "win-testdb" -HyperVServer "prasof10" -TargetDisk "E:\Hyper-V" -ConfigFile .\output\template-config.json 
+.\Create-VM.ps1 -VMName "win-testdb" -HyperVServer "prasof10" -TargetDisk "E:\Hyper-V" -ConfigFile .\output\config-template.json 
 ```
 

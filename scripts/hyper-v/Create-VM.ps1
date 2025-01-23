@@ -4,7 +4,7 @@ param (
     [string]$VMName,               # Name of the virtual machine
     [string]$HyperVServer = "localhost", # Hyper-V server name (default is localhost)
     [string]$TargetDisk,           # Target disk for VM creation (e.g., C:\Hyper-V)
-    [string]$ConfigFile = "./template-config.json", # Configuration file name (default)
+    [string]$ConfigFile = "./config-template.json", # Configuration file name (default)
     [switch]$DryRun                # Simulate actions without making changes
 )
 

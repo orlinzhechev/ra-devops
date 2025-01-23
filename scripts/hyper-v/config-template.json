@@ -1,0 +1,21 @@
+﻿{
+    "Generation":  2,
+    "RAM":  8,
+    "Disks":  [
+                  {
+                      "Path":  "E:\\Hyper-V\\{{VMName}}\\Virtual Hard Disks\\{{VMName}}_os.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  100
+                  }
+              ],
+    "CPUs":  4,
+    "VMName":  "{{VMName}}",
+    "NetworkAdapters":  [
+                            {
+                                "Name":  "Network Adapter",
+                                "SwitchName":  "External 1",
+                                "MacAddress":  "00155D66650E"
+                            }
+                        ],
+    "ISOPath":  "C:\\iso\\SW_DVD9_Win_Server_STD_CORE_2022_2108.14_64Bit_English_DC_STD_MLF_X23-25643.ISO"
+}

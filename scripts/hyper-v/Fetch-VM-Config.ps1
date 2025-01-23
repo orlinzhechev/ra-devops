@@ -3,7 +3,7 @@
 param (
     [string]$VMName,               # Име на виртуалната машина
     [string]$HyperVServer = "localhost", # Име на Hyper-V сървъра (по подразбиране localhost)
-    [string]$ConfigFile = ".\template-config.json", # Име на конфигурационния файл (по подразбиране)
+    [string]$ConfigFile = ".\config-template.json", # Име на конфигурационния файл (по подразбиране)
     [switch]$GenerateTemplate,       # Опция за генериране на конфигурационен файл с шаблон
     [string]$OutputFile              # Опционално: име на генерирания файл
 )
@@ -95,9 +95,9 @@ if (-not (Test-Path -Path $OutputDirectory)) {
 $OutputFilePath = if ($OutputFile) {
     Join-Path -Path $OutputDirectory -ChildPath $OutputFile
 } elseif ($GenerateTemplate) {
-    Join-Path -Path $OutputDirectory -ChildPath "template-config.json"
+    Join-Path -Path $OutputDirectory -ChildPath "config-template.json"
 } else {
-    Join-Path -Path $OutputDirectory -ChildPath "$VMName-config.json"
+    Join-Path -Path $OutputDirectory -ChildPath "config-$VMName.json"
 }
 
 # Ако е зададен параметърът -GenerateTemplate, генерираме конфигурационен файл със стойности-шаблони

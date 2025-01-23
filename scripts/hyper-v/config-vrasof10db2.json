@@ -1,0 +1,51 @@
+﻿{
+    "Generation":  2,
+    "RAM":  32,
+    "Disks":  [
+                  {
+                      "Path":  "E:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_os.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  60
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_odata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  200
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_mdata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  200
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_adata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  50
+                  },
+                  {
+                      "Path":  "D:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_log.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  100
+                  },
+                  {
+                      "Path":  "D:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_tempdb.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  100
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\vrasof10db2\\virtual hard disks\\vrasof10db2_bdata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  50
+                  }
+              ],
+    "CPUs":  8,
+    "VMName":  "VRASOF10DB2",
+    "NetworkAdapters":  [
+                            {
+                                "Name":  "Network Adapter",
+                                "SwitchName":  "External 1",
+                                "MacAddress":  "00155D666505"
+                            }
+                        ],
+    "ISOPath":  "C:\\iso\\enu_sql_server_2022_developer_edition_x64_dvd_7cacf733.iso"
+}
