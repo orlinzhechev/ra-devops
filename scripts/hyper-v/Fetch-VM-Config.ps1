@@ -1,8 +1,11 @@
+# Fetch-VM-Config.ps1
+
 param (
     [string]$VMName,               # Име на виртуалната машина
     [string]$HyperVServer = "localhost", # Име на Hyper-V сървъра (по подразбиране localhost)
     [string]$ConfigFile = ".\template-config.json", # Име на конфигурационния файл (по подразбиране)
-    [switch]$GenerateTemplate       # Опция за генериране на конфигурационен файл с шаблон
+    [switch]$GenerateTemplate,       # Опция за генериране на конфигурационен файл с шаблон
+    [string]$OutputFile              # Опционално: име на генерирания файл
 )
 
 Write-Host "Fetching configuration for VM '$VMName' on server '$HyperVServer'..." -ForegroundColor Green
@@ -19,20 +22,41 @@ $VHD = Get-VMHardDiskDrive -ComputerName $HyperVServer -VMName $VMName
 $Memory = @{ StartupRAM = [math]::Round((Get-VM -ComputerName $HyperVServer -Name $VMName).MemoryStartup / 1GB, 0) }
 $Processor = Get-VMProcessor -ComputerName $HyperVServer -VMName $VMName
 
-# Get Network Adapters
-$NetworkAdapters = Get-VMNetworkAdapter -ComputerName $HyperVServer -VMName $VMName
-
 # Get Hard Disks and their sizes
 $Disks = Get-VMHardDiskDrive -ComputerName $HyperVServer -VMName $VMName
-$DiskDetails = $Disks | ForEach-Object {
-    $DiskSize = (Get-VHD -Path $_.Path).Size / 1GB
+$DiskDetails = @($Disks | ForEach-Object {
+    $DiskPath = $_.Path
+    $DiskSize = 0
+
+    if ($HyperVServer -eq "localhost") {
+        # Local server: Directly use Get-VHD
+        if (Test-Path $DiskPath) {
+            $DiskSize = (Get-VHD -Path $DiskPath).Size / 1GB
+        } else {
+            Write-Host "Warning: Disk '$DiskPath' does not exist." -ForegroundColor Yellow
+        }
+    } else {
+        # Remote server: Use Invoke-Command
+        try {
+            $DiskSize = Invoke-Command -ComputerName $HyperVServer -ScriptBlock {
+                param($Path)
+                if (Test-Path $Path) {
+                    (Get-VHD -Path $Path).Size / 1GB
+                } else {
+                    Write-Output 0
+                }
+            } -ArgumentList $DiskPath
+        } catch {
+            Write-Host "Error accessing disk '$DiskPath' on remote server: $_" -ForegroundColor Red
+        }
+    }
+
     [PSCustomObject]@{
-        Name        = $_.Name
-        Path        = $_.Path
+        Path        = $DiskPath
         Controller  = $_.ControllerType
         SizeGB      = [math]::Round($DiskSize, 2)
     }
-}
+})
 
 # Extract VM configuration
 $VMConfig = @{
@@ -43,14 +67,17 @@ $VMConfig = @{
     ISOPath      = ($VM | Get-VMDvdDrive).Path
 }
 
+# Get Network Adapters
+$NetworkAdapters = Get-VMNetworkAdapter -ComputerName $HyperVServer -VMName $VMName
+
 # Adding network adapter details (SwitchName will remain only here)
-$VMConfig.NetworkAdapters = $NetworkAdapters | ForEach-Object {
+$VMConfig.NetworkAdapters = @($NetworkAdapters | ForEach-Object {
     [PSCustomObject]@{
         Name        = $_.Name
         SwitchName  = $_.SwitchName
         MacAddress  = $_.MacAddress
     }
-}
+})
 
 # Adding disk details
 $VMConfig.Disks = $DiskDetails
@@ -64,25 +91,28 @@ if (-not (Test-Path -Path $OutputDirectory)) {
     New-Item -ItemType Directory -Path $OutputDirectory | Out-Null
 }
 
+# Генериране на изходен файл
+$OutputFilePath = if ($OutputFile) {
+    Join-Path -Path $OutputDirectory -ChildPath $OutputFile
+} elseif ($GenerateTemplate) {
+    Join-Path -Path $OutputDirectory -ChildPath "template-config.json"
+} else {
+    Join-Path -Path $OutputDirectory -ChildPath "$VMName-config.json"
+}
+
 # Ако е зададен параметърът -GenerateTemplate, генерираме конфигурационен файл със стойности-шаблони
 if ($GenerateTemplate) {
     # Заместете името на машината с шаблон
     $JSONConfig = $JSONConfig -replace $VMName, "{{VMName}}"
-    $JSONConfig | Out-File -FilePath "$OutputDirectory\template-config.json" -Encoding utf8
-    Write-Host "Template configuration saved to $OutputDirectory\template-config.json" -ForegroundColor Green
+    $JSONConfig | Out-File -FilePath $OutputFilePath -Encoding utf8
+    Write-Host "Template configuration saved to $OutputFilePath" -ForegroundColor Green
 } else {
     # Ако не е зададен -GenerateTemplate, записваме конфигурацията със стойностите за виртуалната машина
-    $JSONConfig | Out-File -FilePath "$OutputDirectory\$VMName-config.json" -Encoding utf8
-    Write-Host "Configuration saved to $OutputDirectory\$VMName-config.json" -ForegroundColor Green
+    $JSONConfig | Out-File -FilePath $OutputFilePath -Encoding utf8
+    Write-Host "Configuration saved to $OutputFilePath" -ForegroundColor Green
 }
 
 # Принтиране на съдържанието на генерирания конфигурационен файл
 Write-Host "Generated configuration file content:" -ForegroundColor Cyan
-Get-Content -Path "$OutputDirectory\$VMName-config.json" | Out-String | Write-Host
-
-# Ако е зададен параметърът -GenerateTemplate, принтираме съдържанието на шаблона
-if ($GenerateTemplate) {
-    Write-Host "Generated template configuration file content:" -ForegroundColor Cyan
-    Get-Content -Path "$OutputDirectory\template-config.json" | Out-String | Write-Host
-}
+Get-Content -Path $OutputFilePath | Out-String | Write-Host
 

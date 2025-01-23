@@ -1,25 +1,49 @@
 ﻿{
     "Generation":  2,
-    "RAM":  8,
-    "Disks":  {
-                  "Path":  "C:\\Hyper-v\\{{VMName}}\\Virtual Hard Disks\\{{VMName}}_os.vhdx",
-                  "Controller":  1,
-                  "SizeGB":  5
-              },
-    "CPUs":  4,
+    "RAM":  32,
+    "Disks":  [
+                  {
+                      "Path":  "E:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_os.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  60
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_odata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  200
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_mdata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  200
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_adata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  50
+                  },
+                  {
+                      "Path":  "D:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_log.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  100
+                  },
+                  {
+                      "Path":  "D:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_tempdb.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  100
+                  },
+                  {
+                      "Path":  "E:\\hyper-v\\{{VMName}}\\virtual hard disks\\{{VMName}}_bdata.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  50
+                  }
+              ],
+    "CPUs":  8,
     "VMName":  "{{VMName}}",
-    "NetworkAdapters":  [
-                            {
-                                "Name":  "Network Adapter",
-                                "SwitchName":  "Default Switch",
-                                "MacAddress":  "00155D1F2D04"
-                            },
-                            {
-                                "Name":  "Network Adapter",
-                                "SwitchName":  "InternalSwitch",
-                                "MacAddress":  "00155D1F2D05"
-                            }
-                        ],
-    "ISOPath":  "C:\\iso\\SW_DVD9_Win_Server_STD_CORE_2022_2108.14_64Bit_English_DC_STD_MLF_X23-25643.ISO"
+    "NetworkAdapters":  {
+                            "Name":  "Network Adapter",
+                            "SwitchName":  "External 1",
+                            "MacAddress":  "00155D666505"
+                        },
+    "ISOPath":  "C:\\iso\\enu_sql_server_2022_developer_edition_x64_dvd_7cacf733.iso"
 }
-
