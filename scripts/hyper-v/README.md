@@ -3,7 +3,7 @@
 ## To fetch a configuration 
 - Local Hyper-V server
 ```
-.\Fetch-VM-Config.ps1 localhost win11
+.\Fetch-VM-Config.ps1 win11 localhost 
 ```
 
 - Remote Hyper-V server that is connected to the local Hyper-V client
