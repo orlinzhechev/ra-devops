@@ -95,9 +95,9 @@ if (-not (Test-Path -Path $OutputDirectory)) {
 $OutputFilePath = if ($OutputFile) {
     Join-Path -Path $OutputDirectory -ChildPath $OutputFile
 } elseif ($GenerateTemplate) {
-    Join-Path -Path $OutputDirectory -ChildPath "config-template.json"
+    Join-Path -Path $OutputDirectory -ChildPath "template-$HyperVServer-$VMName.json"
 } else {
-    Join-Path -Path $OutputDirectory -ChildPath "config-$VMName.json"
+    Join-Path -Path $OutputDirectory -ChildPath "config-$HyperVServer-$VMName.json"
 }
 
 # Ако е зададен параметърът -GenerateTemplate, генерираме конфигурационен файл със стойности-шаблони

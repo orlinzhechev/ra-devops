@@ -3,15 +3,15 @@
 param (
     [string]$VMName,               # Name of the virtual machine
     [string]$HyperVServer = "localhost", # Hyper-V server name (default is localhost)
-    [string]$TargetDisk,           # Target disk for VM creation (e.g., C:\Hyper-V)
-    [string]$ConfigFile = "./config-template.json", # Configuration file name (default)
+    [string]$TargetPath,           # Target path for VM creation (e.g., C:\Hyper-V)
+    [string]$ConfigFile,           # Configuration file name (default)
     [switch]$DryRun                # Simulate actions without making changes
 )
 
 Write-Host "Starting VM creation process..." -ForegroundColor Green
 
 # Validate parameters
-if (-not $VMName -or -not $TargetDisk) {
+if (-not $VMName -or -not $TargetPath) {
     Write-Host "Error: Missing mandatory parameters!" -ForegroundColor Red
     exit
 }
@@ -19,7 +19,7 @@ if (-not $VMName -or -not $TargetDisk) {
 Write-Host "Parameters received:" -ForegroundColor Cyan
 Write-Host "Hyper-V Server: $HyperVServer" -ForegroundColor Cyan
 Write-Host "VM Name: $VMName" -ForegroundColor Cyan
-Write-Host "Target Disk: $TargetDisk" -ForegroundColor Cyan
+Write-Host "Target Disk: $TargetPath" -ForegroundColor Cyan
 Write-Host "Configuration File: $ConfigFile" -ForegroundColor Cyan
 
 # Check if the virtual machine already exists
@@ -47,7 +47,7 @@ Write-Host "Configuration loaded successfully." -ForegroundColor Green
 # Replace {{VMName}} with the provided VMName and update disk path
 foreach ($disk in $Config.Disks) {
     $disk.Path = $disk.Path -replace '{{VMName}}', $VMName
-    $disk.Path = $disk.Path -replace "^[A-Za-z]:\\Hyper-v", $TargetDisk
+    $disk.Path = $disk.Path -replace "^[A-Za-z]:\\Hyper-v", $TargetPath
 }
 
 $Config.VMName = $VMName
@@ -76,7 +76,7 @@ function Resolve-PathBasedOnServer {
 }
 
 # Create directories for VM
-$VMDiskPath = Resolve-PathBasedOnServer -ServerName $HyperVServer -BasePath $TargetDisk -ChildPath "$VMName\Virtual Hard Disks"
+$VMDiskPath = Resolve-PathBasedOnServer -ServerName $HyperVServer -BasePath $TargetPath -ChildPath "$VMName\Virtual Hard Disks"
 Write-Host "Checking if directory for VM already exists on '$HyperVServer'..." -ForegroundColor Yellow
 if (-not $DryRun) {
     $DirectoryExists = Invoke-Command -ComputerName $HyperVServer -ScriptBlock {
@@ -130,7 +130,7 @@ if (-not $DryRun) {
            -Name $VMName `
            -Generation $Config.Generation `
            -MemoryStartupBytes ([int]$Config.RAM * 1GB) `
-           -Path $TargetDisk
+           -Path $TargetPath
 } else {
     Write-Host "DryRun: Simulating VM creation with name $VMName." -ForegroundColor Yellow
 }

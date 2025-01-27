@@ -53,3 +53,5 @@ cat .\output\config-template.json
 .\Create-VM.ps1 -VMName "win-testdb" -HyperVServer "prasof10" -TargetDisk "E:\Hyper-V" -ConfigFile .\output\config-template.json 
 ```
 
+## Configuration Examples
+There are couple of configuration examples in subdirectory `config-examples`

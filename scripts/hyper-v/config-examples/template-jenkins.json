@@ -1,0 +1,21 @@
+﻿{
+    "Generation":  2,
+    "RAM":  8,
+    "Disks":  [
+                  {
+                      "Path":  "E:\\Hyper-V\\{{VMName}}\\Virtual Hard Disks\\{{VMName}}_os.vhdx",
+                      "Controller":  1,
+                      "SizeGB":  100
+                  }
+              ],
+    "CPUs":  4,
+    "VMName":  "{{VMName}}",
+    "NetworkAdapters":  [
+                            {
+                                "Name":  "Network Adapter",
+                                "SwitchName":  "External 1",
+                                "MacAddress":  "00155D66650E"
+                            }
+                        ],
+    "ISOPath":  "C:\\iso\\ubuntu-24.04.1-live-server-amd64.iso"
+}
