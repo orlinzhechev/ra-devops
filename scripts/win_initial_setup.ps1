@@ -144,6 +144,18 @@ Restart-Service sshd
 
 Write-Host "sshd service restarted. DefaultShell configuration applied."
 
+# 18. Creating Ansible Temp directory
+# Define the path
+$path = "C:\ansible_temp"
+
+# Check if the directory exists, create it if not
+if (-not (Test-Path -Path $path)) {
+    New-Item -ItemType Directory -Path $path -Force
+    Write-Host "Directory created: $path"
+} else {
+    Write-Host "Directory already exists: $path"
+}
+
 
 Write-Host "Script completed successfully."
 

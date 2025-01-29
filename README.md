@@ -49,13 +49,13 @@ There is an ongoing debate regarding the preferred access method for Ansible: SS
 2. Set propper SSH key to use for bitbucket access
 3. Checkout the reconart repo
 ```
-git clone ssh://git@bitbucket.reconart.net:7999/reco/reconart.git
+git clone -b develop ssh://git@bitbucket.reconart.net:7999/reco/reconart.git
 ```
-4. Copy scripts/build.bat and scripts/install_nugets.ps1 to the root directory of the repo
-5. Copy ReconArt Nugets fro \\bg-pld\nas001\Reconart.Nuget to c:\temp\Reconart.Nuget
+4. Copy `scripts/build.bat` and `scripts/install_nugets.ps1` to the root directory of the repo
+5. Copy ReconArt Nugets fro `\\\\bg-pld\nas001\Reconart.Nuget` to `c:\temp\Reconart.Nuget`
 6. Switch to the repo directory
 7. Execute build.bat
 ```
-build.bat 2022 rebuild
+.\build.bat 2022 rebuild
 ```
 8. Cross fingers! The build takes 10 minutes on 8 core 8GB VM

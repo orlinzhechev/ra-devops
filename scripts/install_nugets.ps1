@@ -13,6 +13,12 @@ $nugetSource = "c:\temp\ReconArt.Nuget"
 $packagesPath = Join-Path -Path (Get-Location) -ChildPath "packages"
 $backupSource = "https://api.nuget.org/v3/index.json"
 
+# Remove the old source
+nuget source remove -Name "ReconArt"
+
+# Add the new source
+nuget source add -Name "ReconArt" -Source "C:\temp\Reconart.Nuget"
+
 Write-Host "Checking NuGet dependencies for solution: $SolutionName"
 
 # Define the packages and versions
@@ -25,7 +31,19 @@ $packages = @(
     @{ Name = "ReconArt.Import.API.Parsers.Main"; Version = "2.0.0" },
     @{ Name = "ReconArt.Import.API.Parsers.FixedWidth"; Version = "1.0.5" },
     @{ Name = "ExcelDataReader"; Version = "3.7.0-develop00415" },
-    @{ Name = "CsvHelper"; Version = "27.2.1" } # Примерна версия, проверете необходимата
+    @{ Name = "ExcelDataReader.DataSet"; Version = "3.7.0" },
+    @{ Name = "CsvHelper"; Version = "27.2.1" },
+    @{ Name = "ComponentSpace.SAML2"; Version = "5.3.0" },
+    @{ Name = "Microsoft.AspNet.SignalR"; Version = "2.4.3" },
+    @{ Name = "Microsoft.AspNet.SignalR.Core"; Version = "2.4.3" },
+    @{ Name = "Microsoft.AspNet.SignalR.JS"; Version = "2.4.3" },
+    @{ Name = "Microsoft.AspNet.SignalR.SystemWeb"; Version = "2.4.3" },
+    @{ Name = "Microsoft.Owin"; Version = "2.1.0" },
+    @{ Name = "Microsoft.Owin.Host.SystemWeb"; Version = "2.1.0" },
+    @{ Name = "Microsoft.Owin.Security"; Version = "2.1.0" },
+    @{ Name = "Owin"; Version = "1.0.0" },
+    @{ Name = "jQuery"; Version = "1.6.4" }
+
 )
 
 # Loop through each package and check if it is installed
@@ -52,7 +70,6 @@ foreach ($package in $packages) {
         Write-Host "$($package.Name) version $($package.Version) is already installed in $packagesPath."
     }
 }
-
 
 # Restore NuGet dependencies for the solution
 Write-Host "Restoring NuGet packages for solution: $SolutionName"

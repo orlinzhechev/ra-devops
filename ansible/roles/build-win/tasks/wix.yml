@@ -21,14 +21,3 @@
     path: 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Microsoft\\WiX\\v3.x\\Wix.targets'
   register: wix_target_check
 
-- name: Download Wix.targets if missing
-  ansible.windows.win_get_url:
-    url: https://raw.githubusercontent.com/wixtoolset/wix3/master/src/ext/wix.targets
-    dest: 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Microsoft\\WiX\\v3.x\\Wix.targets'
-  when: not wix_target_check.stat.exists
-
-- name: Fail if Wix.targets is missing
-  ansible.builtin.fail:
-    msg: "WiX.targets file is missing in the linked VS2019 path!"
-  when: not wix_target_check.stat.exists
-

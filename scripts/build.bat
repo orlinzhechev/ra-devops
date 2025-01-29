@@ -69,7 +69,7 @@ if "%2"=="rebuild" (
 echo Performing ReconArt Build...
 
 :: msbuild %SOLUTION_FILE% /t:Build /p:"Platform=Mixed Platforms" /p:Configuration=NewInstaller /p:VisualStudioVersion=17.0 /consoleloggerparameters:ErrorsOnly /v:m /nologo /m:2
-msbuild %SOLUTION_FILE% /t:Build /p:"Platform=Mixed Platforms" /p:Configuration=NewInstaller /p:VisualStudioVersion=17.0 /v:n /m:8
+msbuild %SOLUTION_FILE% /restore /t:Build /p:"Platform=Mixed Platforms" /p:Configuration=NewInstaller /p:VisualStudioVersion=17.0 /v:n /m:8
 
 :: Perform the DB build
 echo Performing DB Build...
@@ -77,3 +77,4 @@ echo Performing DB Build...
 :: msbuild .\ReconArt.Database\ReconArt.Database.sln /t:Rebuild /p:Configuration=Release /v:m /nologo /consoleloggerparameters:ErrorsOnly /m:2 /p:SqlCmdVar__1=New
 msbuild .\ReconArt.Database\ReconArt.Database.sln /t:Rebuild /p:Configuration=Release /v:n /m:8 /p:SqlCmdVar__1=New
 
+echo Build SUCCESS
