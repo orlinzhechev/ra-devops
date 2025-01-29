@@ -44,7 +44,18 @@ There is an ongoing debate regarding the preferred access method for Ansible: SS
    `cd ansible`
    `ansible-playbook -i inventory.ini build_win.yml'
 
-# TODO
-1. Still working on ReconArt After Commit. It uses 2022. It builds another solution. We still have probelm with WiX setup
-
-2. Production build uses VS 2017 (v15). So need to add installation steps for vs2015 as well
+## How to build ReconArt Relase
+1. SSH to the build machine
+2. Set propper SSH key to use for bitbucket access
+3. Checkout the reconart repo
+```
+git clone ssh://git@bitbucket.reconart.net:7999/reco/reconart.git
+```
+4. Copy scripts/build.bat and scripts/install_nugets.ps1 to the root directory of the repo
+5. Copy ReconArt Nugets fro \\bg-pld\nas001\Reconart.Nuget to c:\temp\Reconart.Nuget
+6. Switch to the repo directory
+7. Execute build.bat
+```
+build.bat 2022 rebuild
+```
+8. Cross fingers! The build takes 10 minutes on 8 core 8GB VM

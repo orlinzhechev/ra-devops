@@ -122,32 +122,29 @@ Restart-Service sshd
 Write-Host "Allow machine to be ping from outside..."
 netsh advfirewall firewall add rule name="ICMP Allow incoming V4 echo request" protocol="icmpv4:8,any" dir=in action=allow
 
-# 17. Force switching to Powershell when SSH session is opened
-$sshdConfigPath = "C:\ProgramData\ssh\sshd_config"
-$powerShellPath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+# 17. Set powershell as a default shell in the registry
+# Define the registry path and key
+$registryPath = "HKLM:\SOFTWARE\OpenSSH"
+$registryKey = "DefaultShell"
+$defaultShellPath = "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 
-# Check if the sshd_config file exists
-if (Test-Path $sshdConfigPath) {
-    # Read the existing content of the file
-    $sshdConfig = Get-Content $sshdConfigPath
-
-    # Check if ForceCommand is already set
-    $forceCommandExists = $sshdConfig -match "^\s*ForceCommand\s"
-
-    if (-not $forceCommandExists) {
-        # Add ForceCommand at the end of the file
-        Add-Content -Path $sshdConfigPath -Value "`nForceCommand $powerShellPath"
-        Write-Host "ForceCommand added to $sshdConfigPath"
-    } else {
-        Write-Host "ForceCommand is already set."
-    }
-
-    # Restart the SSH service to apply changes
-    Restart-Service -Name sshd
-    Write-Host "SSH service has been restarted."
-} else {
-    Write-Host "The sshd_config file does not exist."
+# Check if the registry path exists, create it if necessary
+if (-not (Test-Path $registryPath)) {
+    New-Item -Path $registryPath -Force
 }
 
+# Set the DefaultShell registry key
+Set-ItemProperty -Path $registryPath -Name $registryKey -Value $defaultShellPath
+
+# Confirm the change
+Write-Host "DefaultShell registry key set to:" (Get-ItemProperty -Path $registryPath -Name $registryKey).DefaultShell
+
+# Restart the sshd service to apply changes
+Restart-Service sshd
+
+Write-Host "sshd service restarted. DefaultShell configuration applied."
+
+
 Write-Host "Script completed successfully."
+
 

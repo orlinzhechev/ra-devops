@@ -1,8 +1,31 @@
 ---
-- include_tasks: vs2019.yml
-- include_tasks: vs2022.yml
-- include_tasks: dotnet35.yml
-- include_tasks: dotnet46.yml
-- include_tasks: dotnet48.yml
-- include_tasks: nuget.yml
-- include_tasks: wix.yml
+- name: Detect if OS is Windows Server
+  ansible.builtin.set_fact:
+    is_windows_server: "{{ ansible_facts.os_product_type == 'server' }}"
+
+- name: Include tasks for Visual Studio 2019
+  include_tasks: vs2019.yml
+
+- name: Include tasks for Visual Studio 2022
+  include_tasks: vs2022.yml
+
+- name: Include .NET Framework 3.5 tasks for Windows 11
+  include_tasks: dotnet35.yml
+  when: not is_windows_server
+
+- name: Include .NET Framework 3.5 tasks for Windows Server
+  include_tasks: dotnet35_server.yml
+  when: is_windows_server
+
+- name: Include tasks for .NET Framework 4.6
+  include_tasks: dotnet46.yml
+
+- name: Include tasks for .NET Framework 4.8
+  include_tasks: dotnet48.yml
+
+- name: Include tasks for NuGet
+  include_tasks: nuget.yml
+
+- name: Include tasks for WiX Toolset
+  include_tasks: wix.yml
+

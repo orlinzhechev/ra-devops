@@ -1,9 +1,6 @@
 ---
-- name: Install windows build machines
+- name: Run setup on Windows host
   hosts: build_win
-  become: yes
-  become_user: administrator
-
   vars:
     ansible_user: administrator
     ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
@@ -14,10 +11,14 @@
     ansible_python_interpreter: C:\\Python313\\python.exe
 
   tasks:
-    - name: Check access
-      win_ping:
+    - name: Gather facts
+      ansible.builtin.setup:
 
-  roles:
-    - common-win
-    - build-win
+    - name: Debug OS name
+      ansible.builtin.debug:
+        var: ansible_facts.os_name
+
+    - name: Debug OS product type
+      ansible.builtin.debug:
+        var: ansible_facts.os_product_type
 

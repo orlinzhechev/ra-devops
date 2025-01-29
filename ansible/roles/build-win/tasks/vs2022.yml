@@ -39,12 +39,18 @@
     path: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\ManagedDesktop"
     state: directory
 
+- name: Install Microsoft Web Deploy
+  win_chocolatey:
+    name: webdeploy
+    state: present
+
 - name: Add ASP.NET and Web Development Workload
   win_command: >
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vs_installer.exe"
     modify --productId "Microsoft.VisualStudio.Product.Community"
     --channelUri "https://aka.ms/vs/17/release/channel"
     --add Microsoft.VisualStudio.Workload.NetWeb
+    --add Microsoft.WebDeploy
     --quiet --norestart
   args:
     creates: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\NetWeb"
@@ -52,5 +58,10 @@
 - name: Verify if ASP.NET and Web Development Workload was successfully added
   win_file:
     path: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Microsoft\\NetWeb"
+    state: directory
+
+- name: Verify if Microsoft Web Deploy is installed
+  win_file:
+    path: "C:\\Program Files\\IIS\\Microsoft Web Deploy V3"
     state: directory
 

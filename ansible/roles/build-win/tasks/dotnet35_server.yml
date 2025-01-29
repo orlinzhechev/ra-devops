@@ -1,0 +1,22 @@
+---
+- name: Install .NET Framework 3.5
+  block:
+    - name: Install .NET Framework 3.5 runtime using win_feature
+      ansible.windows.win_feature:
+        name: NET-Framework-Features
+        state: present
+        include_all_subfeatures: yes
+        restart: no
+      register: netfx3_result
+
+    - name: Output .NET Framework 3.5 installation result
+      ansible.builtin.debug:
+        var: netfx3_result
+
+    - name: Fail if .NET Framework 3.5 installation failed
+      ansible.builtin.fail:
+        msg: ".NET Framework 3.5 installation failed: {{ netfx3_result }}"
+      when: netfx3_result.failed
+  tags:
+    - debug
+
