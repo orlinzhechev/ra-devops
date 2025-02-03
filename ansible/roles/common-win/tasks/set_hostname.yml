@@ -1,0 +1,15 @@
+---
+# Set Windows Hostname and Reboot if Required
+- name: Set the hostname on the Windows machine
+  ansible.windows.win_hostname:
+    name: "{{ computer_name }}"
+  register: hostname_change
+  # Change the hostname using the 'computer_name' variable from the inventory.
+
+- name: Reboot the host if a reboot is required
+  ansible.windows.win_reboot:
+    reboot_timeout: 600          # Maximum wait time (in seconds) for the host to come back online
+    post_reboot_delay: 10        # Delay after the reboot before checking connectivity
+  when: hostname_change.reboot_required
+  # Reboot the machine if the previous task indicated that a reboot is required.
+
