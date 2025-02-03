@@ -1,0 +1,48 @@
+---
+- name: Install OpenJDK 17 via Chocolatey
+  win_chocolatey:
+    name: openjdk17
+    state: present
+
+- name: Get current user PATH from registry
+  win_shell: reg query "HKCU\Environment" /v Path
+  register: user_path_output
+
+- name: Debug user_path_output
+  debug:
+    var: user_path_output.stdout_lines
+
+- name: Parse current user PATH value from stdout_lines
+  set_fact:
+    current_user_path: "{{ (user_path_output.stdout_lines | select('search', 'REG_SZ') | list)[-1] | regex_replace('.*REG_SZ\\s+', '') | trim }}"
+
+- name: Debug current user PATH
+  debug:
+    msg: "Current user PATH: {{ current_user_path }}"
+
+- name: Append OpenJDK bin directory to user PATH if not present
+  set_fact:
+    new_user_path: >-
+      {{ current_user_path }}
+      {{ ';' if (current_user_path | length) > 0 and current_user_path[-1] != ';' else '' }}
+      {{ 'C:\\Program Files\\OpenJDK\\jdk-17\\bin' if ('C:\\Program Files\\OpenJDK\\jdk-17\\bin' not in current_user_path) else '' }}
+
+- name: Debug new user PATH before normalization
+  debug:
+    msg: "New user PATH before normalization: {{ new_user_path }}"
+
+- name: Normalize new user PATH (convert multiple backslashes to a single backslash)
+  set_fact:
+    normalized_user_path: "{{ new_user_path | regex_replace('\\\\+', '\\\\') }}"
+
+- name: Debug normalized user PATH
+  debug:
+    msg: "Normalized user PATH: {{ normalized_user_path }}"
+
+- name: Update user PATH environment variable
+  win_environment:
+    name: Path
+    value: "{{ normalized_user_path }}"
+    state: present
+    level: user
+

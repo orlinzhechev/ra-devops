@@ -1,0 +1,53 @@
+- name: Set Jenkins URL fact
+  set_fact:
+    jenkins_url: "http://10.10.102.250:8080"  # Adjust this URL if necessary
+
+- name: Install Jenkins plugins
+  become: yes
+  become_method: sudo
+  become_user: jenkins
+  jenkins_plugin:
+    name: "{{ item }}"
+    state: present
+    version: latest
+    url: "{{ jenkins_url }}"
+    url_username: "{{ jenkins_admin_user }}"
+    url_password: "{{ jenkins_api_token }}"
+    jenkins_home: /var/lib/jenkins
+  loop:
+    - dashboard-view
+    - cloudbees-folder
+    - antisamy-markup-formatter
+    - build-name-setter
+    - build-timeout
+    - credentials-binding
+    - embeddable-build-status
+    - ssh-slaves
+    - timestamper
+    - ws-cleanup
+    - msbuild
+    - warnings
+    - xunit
+    - workflow-aggregator
+    - github-branch-source
+    - pipeline-github-lib
+    - pipeline-graph-view
+    - conditional-buildstep
+    - parameterized-trigger
+    - copyartifact
+    - bitbucket
+    - git
+    - git-parameter
+    - github
+    - ssh-build-agents
+    - matrix-auth
+    - pam-auth
+    - ldap
+    - role-strategy
+    - active-directory
+    - email-ext
+    - email-ext-template
+    - mailer
+    - dark-theme
+    - swarm
+

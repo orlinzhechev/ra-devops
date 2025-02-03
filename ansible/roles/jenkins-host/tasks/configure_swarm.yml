@@ -1,0 +1,6 @@
+---
+- name: Configure Jenkins Swarm Agent Token/Secret
+  template:
+    src: jenkins_swarm_config.xml.j2
+    dest: /var/lib/jenkins/swarm_config.xml
+  notify: Restart Jenkins

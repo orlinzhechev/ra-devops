@@ -1,0 +1,5 @@
+<swarm>
+  <secret>{{ jenkins_swarm_secret }}</secret>
+  <masterUrl>http://{{ ansible_default_ipv4.address }}:{{ jenkins_http_port }}</masterUrl>
+  <!-- Additional swarm agent settings can be added here -->
+</swarm>

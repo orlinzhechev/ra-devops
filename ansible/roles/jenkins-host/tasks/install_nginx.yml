@@ -1,0 +1,44 @@
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Create directory for SSL certificates
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: nginx_ssl_enabled
+
+- name: Generate self-signed SSL certificate for nginx
+  command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048
+    -subj "/C={{ nginx_ssl_country }}/ST={{ nginx_ssl_state }}/L={{ nginx_ssl_locality }}/O={{ nginx_ssl_organization }}/OU={{ nginx_ssl_organizational_unit }}/CN={{ nginx_ssl_common_name }}"
+    -keyout {{ nginx_ssl_key_path }} -out {{ nginx_ssl_cert_path }}
+  args:
+    creates: "{{ nginx_ssl_cert_path }}"
+  when: nginx_ssl_enabled
+
+- name: Deploy nginx configuration for Jenkins
+  template:
+    src: nginx_jenkins.conf.j2
+    dest: /etc/nginx/sites-available/jenkins
+  notify: Restart nginx
+
+- name: Enable nginx configuration
+  file:
+    src: /etc/nginx/sites-available/jenkins
+    dest: /etc/nginx/sites-enabled/jenkins
+    state: link
+  notify: Restart nginx
+
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Restart nginx
+

@@ -1,0 +1,23 @@
+---
+# Default settings for Jenkins
+jenkins_swarm_secret: "your_swarm_secret_here"  # Swarm Agent token/secret
+jenkins_admin_user: "admin"
+jenkins_admin_password: "Welc0me+1J"
+jenkins_http_port: 8080
+
+# Settings for nginx
+nginx_listen_port: 80
+nginx_server_name: "jenkins.reconart.com"
+
+# SSL settings for nginx
+nginx_ssl_enabled: true
+nginx_ssl_cert_path: "/etc/nginx/ssl/jenkins.crt"
+nginx_ssl_key_path: "/etc/nginx/ssl/jenkins.key"
+nginx_ssl_country: "BG"
+nginx_ssl_state: "Sofia"
+nginx_ssl_locality: "Sofia"
+nginx_ssl_organization: "ReconArt"
+nginx_ssl_organizational_unit: "IT"
+nginx_ssl_common_name: "{{ nginx_server_name }}"
+
+jenkins_api_token: "114c7d5f39877eec6483a775e8cd65f061"

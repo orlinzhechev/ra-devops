@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: "ReconArt Inc."
+  description: "Role to configure a Jenkins host with Swarm Agent and nginx as a reverse proxy"
+  license: MIT
+  min_ansible_version: 2.9
+dependencies: []

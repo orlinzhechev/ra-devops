@@ -1,0 +1,25 @@
+---
+- name: Set Jenkins URL fact from inventory
+  set_fact:
+    jenkins_url: "http://{{ ansible_host }}:8080"
+
+- name: Create Jenkins user "swarmpool" if it does not exist
+  jenkins_script:
+    url: "{{ jenkins_url }}"
+    user: "{{ jenkins_admin_user }}"
+    password: "{{ jenkins_api_token }}"
+    script: |
+      import jenkins.model.Jenkins
+      def jenkinsInstance = Jenkins.instance
+      // Try to load the user "swarmpool"
+      def user = jenkinsInstance.getSecurityRealm().loadUserByUsername("swarmpool")
+      if (user == null) {
+          println "User swarmpool does not exist. Creating account..."
+          jenkinsInstance.getSecurityRealm().createAccount("swarmpool", "sw4rmpoolPassword")
+          jenkinsInstance.save()
+      } else {
+          println "User swarmpool already exists."
+      }
+  delegate_to: localhost
+  connection: local
+

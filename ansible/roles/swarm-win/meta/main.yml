@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: "Orlin Zhechev"
+  description: "Role to connect a Windows machine to Jenkins using the Swarm client."
+  license: "MIT"
+  min_ansible_version: "2.9"
+dependencies: []

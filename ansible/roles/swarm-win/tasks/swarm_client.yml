@@ -1,0 +1,30 @@
+---
+- name: Ensure the Jenkins directory exists on Windows
+  win_file:
+    path: "C:\\jenkins"
+    state: directory
+
+- name: Download Jenkins Swarm client jar
+  win_get_url:
+    url: "{{ jenkins_master_url }}/swarm/swarm-client.jar"
+    dest: "{{ swarm_client_dest }}"
+    url_username: "{{ jenkins_swarm_user }}"
+    url_password: "{{ jenkins_swarm_secret }}"
+  register: swarm_jar
+
+- name: Create the start-swarm-agent.bat file from template
+  win_template:
+    src: start-swarm-agent.bat.j2
+    dest: "C:\\jenkins\\start-swarm-agent.bat"
+
+- name: Create a scheduled task to run the swarm agent at system startup
+  win_scheduled_task:
+    name: "Start Jenkins Swarm Agent"
+    actions:
+      - path: "C:\\jenkins\\start-swarm-agent.bat"
+    triggers:
+      - type: boot
+    username: "SYSTEM"
+    state: present
+
+

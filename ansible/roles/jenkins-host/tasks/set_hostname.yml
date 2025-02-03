@@ -1,0 +1,13 @@
+- name: Set the hostname using the inventory variable computer_name if needed
+  hostname:
+    name: "{{ computer_name }}"
+  register: hostname_change
+
+- name: Reboot the host to apply the new hostname only if changed
+  reboot:
+    msg: "Rebooting to apply new hostname"
+    pre_reboot_delay: 5
+    post_reboot_delay: 10
+    reboot_timeout: 300
+  when: hostname_change.changed
+

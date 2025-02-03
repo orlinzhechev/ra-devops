@@ -1,0 +1,21 @@
+---
+- name: Add Jenkins repository with trusted option
+  apt_repository:
+    repo: "deb [trusted=yes] https://pkg.jenkins.io/debian-stable binary/"
+    state: present
+  become: yes
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install Java and Jenkins
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - openjdk-17-jdk
+    - jenkins
+  become: yes
+
