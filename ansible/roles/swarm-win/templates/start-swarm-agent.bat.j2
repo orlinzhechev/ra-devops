@@ -1,4 +1,4 @@
 @echo off
-REM Start Jenkins Swarm Agent and log output to C:\jenkins\swarm-agent.log
-java -jar "C:\jenkins\swarm-client.jar" -master {{ jenkins_master_url }} -username {{ jenkins_swarm_user }} -password {{ jenkins_swarm_secret }} -name {{ computer_name }} -disableSslVerification -tunnel {{ jenkins_master_url | regex_replace('^.*://([^:/]+).*$', '\\1') }}:50000 -workDir "C:\jenkins"{% if swarm_labels is defined and swarm_labels != "" %} -labels "{{ swarm_labels }}"{% endif %} >> "C:\jenkins\swarm-agent.log" 2>&1
+REM Start Jenkins Swarm Agent and log output to {{ swarm_working_dir }}\swarm-agent.log
+java -jar "{{ swarm_working_dir }}\swarm-client.jar" -master {{ jenkins_master_url }} -username {{ jenkins_swarm_user }} -password {{ jenkins_swarm_secret }} -name {{ computer_name }} -disableSslVerification -tunnel {{ jenkins_master_url | regex_replace('^.*://([^:/]+).*$', '\\1') }}:50000 -workDir "{{ swarm_working_dir }}"{% if swarm_labels is defined and swarm_labels != "" %} -labels "{{ swarm_labels }}"{% endif %} >> "{{ swarm_working_dir }}\swarm-agent.log" 2>&1
 

@@ -1,8 +1,13 @@
----
-- name: Ensure the Jenkins directory exists on Windows
+- name: Ensure the swarm working directory exists on Windows
   win_file:
-    path: "C:\\jenkins"
+    path: "{{ swarm_working_dir }}"
     state: directory
+
+- name: Create desktop shortcut for working dir
+  win_shortcut:
+    src: "{{ swarm_working_dir }}"
+    dest: "C:\\Users\\{{ ansible_user }}\\Desktop\\Jenkins.lnk"
+    description: "Jenkins Working Directory"
 
 - name: Download Jenkins Swarm client jar
   win_get_url:
@@ -15,16 +20,16 @@
 - name: Create the start-swarm-agent.bat file from template
   win_template:
     src: start-swarm-agent.bat.j2
-    dest: "C:\\jenkins\\start-swarm-agent.bat"
+    dest: "{{ swarm_working_dir }}\\start-swarm-agent.bat"
 
 - name: Create a scheduled task to run the swarm agent at system startup
   win_scheduled_task:
     name: "Start Jenkins Swarm Agent"
     actions:
-      - path: "C:\\jenkins\\start-swarm-agent.bat"
+      - path: "{{ swarm_working_dir }}\\start-swarm-agent.bat"
+        working_directory: "{{ swarm_working_dir }}"
     triggers:
       - type: boot
     username: "SYSTEM"
     state: present
-
 

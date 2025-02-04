@@ -1,0 +1,23 @@
+---
+- name: Copy Start-Agent.ps1 to swarm working directory
+  win_copy:
+    src: Start-Agent.ps1
+    dest: "{{ swarm_working_dir }}\\Start-Agent.ps1"
+
+- name: Copy Stop-Agent.ps1 to swarm working directory
+  win_copy:
+    src: Stop-Agent.ps1
+    dest: "{{ swarm_working_dir }}\\Stop-Agent.ps1"
+
+- name: Create desktop shortcut for Start-Agent
+  win_shortcut:
+    src: "{{ swarm_working_dir }}\\Start-Agent.ps1"
+    dest: "C:\\Users\\{{ ansible_user }}\\Desktop\\Start-Agent.lnk"
+    description: "Start Jenkins Swarm Agent"
+
+- name: Create desktop shortcut for Stop-Agent
+  win_shortcut:
+    src: "{{ swarm_working_dir }}\\Stop-Agent.ps1"
+    dest: "C:\\Users\\{{ ansible_user }}\\Desktop\\Stop-Agent.lnk"
+    description: "Stop Jenkins Swarm Agent"
+

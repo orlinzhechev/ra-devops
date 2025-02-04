@@ -11,12 +11,13 @@
     ansible_shell_type: powershell
     ansible_shell_executable: powershell
     ansible_python_interpreter: C:\Python313\python.exe
+    swarm_labels: build_ra
   tasks:
     - name: Check access
       win_ping:
   roles:
-    #- common-win
-    #- build-win
+    - common-win
+    - build-win
     - swarm-win
 
 - name: Setup Jenkins host
