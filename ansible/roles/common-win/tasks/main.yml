@@ -1,5 +1,7 @@
 ---
 - include_tasks: set_hostname.yml
+- include_tasks: check_choco_path.yml
 - include_tasks: git.yml
 - include_tasks: vim.yml
 - include_tasks: tools.yml
+- include_tasks: custom.yml

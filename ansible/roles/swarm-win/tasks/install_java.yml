@@ -25,7 +25,7 @@
     new_user_path: >-
       {{ current_user_path }}
       {{ ';' if (current_user_path | length) > 0 and current_user_path[-1] != ';' else '' }}
-      {{ 'C:\\Program Files\\OpenJDK\\jdk-17\\bin' if ('C:\\Program Files\\OpenJDK\\jdk-17\\bin' not in current_user_path) else '' }}
+      {{ 'C:\Program Files\OpenJDK\jdk-17\bin' if ('C:\Program Files\OpenJDK\jdk-17\bin' not in current_user_path) else '' }}
 
 - name: Debug new user PATH before normalization
   debug:

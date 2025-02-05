@@ -1,0 +1,27 @@
+---
+- name: Add Chocolatey bin directory to user PATH using PowerShell
+  win_shell: |
+    $chocoBin = 'C:\ProgramData\chocolatey\bin'
+    $currentPath = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
+    if ($currentPath -notlike "*$chocoBin*") {
+        $newPath = $currentPath + ';' + $chocoBin
+        [System.Environment]::SetEnvironmentVariable('Path', $newPath, [System.EnvironmentVariableTarget]::User)
+    }
+
+- name: Reload user environment variables
+  win_shell: |
+    $env:Path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::User)
+
+- name: Add Chocolatey bin directory to System PATH using PowerShell
+  win_shell: |
+    $chocoBin = 'C:\ProgramData\chocolatey\bin'
+    $currentPath = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine)
+    if ($currentPath -notlike "*$chocoBin*") {
+        $newPath = $currentPath + ';' + $chocoBin
+        [System.Environment]::SetEnvironmentVariable('Path', $newPath, [System.EnvironmentVariableTarget]::Machine)
+    }
+
+- name: Reload System environment variables
+  win_shell: |
+    $env:Path = [System.Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine)
+

@@ -22,14 +22,41 @@
     src: start-swarm-agent.bat.j2
     dest: "{{ swarm_working_dir }}\\start-swarm-agent.bat"
 
-- name: Create a scheduled task to run the swarm agent at system startup
+- name: Create a scheduled task to run the swarm agent at user logon
   win_scheduled_task:
     name: "Start Jenkins Swarm Agent"
     actions:
       - path: "{{ swarm_working_dir }}\\start-swarm-agent.bat"
         working_directory: "{{ swarm_working_dir }}"
     triggers:
-      - type: boot
-    username: "SYSTEM"
+      - type: logon
+        # The task will trigger when the specified user logs on.
+        user_id: "{{ ansible_user }}"
+    username: "{{ ansible_user }}"
+    run_only_if_logged_on: yes
+    state: present
+
+- name: Enable auto-logon for the user
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+    name: AutoAdminLogon
+    data: "1"
+    type: string
+    state: present
+
+- name: Set default username for auto-logon
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+    name: DefaultUserName
+    data: "{{ ansible_user }}"
+    type: string
+    state: present
+
+- name: Set default password for auto-logon
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+    name: DefaultPassword
+    data: "{{ auto_logon_password }}"
+    type: string
     state: present
 

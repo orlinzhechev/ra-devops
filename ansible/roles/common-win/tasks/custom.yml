@@ -1,0 +1,9 @@
+---
+- name: Set HideFileExt to 0 (show file extensions) in HKCU
+  win_regedit:
+    path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    name: HideFileExt
+    data: 0
+    type: dword
+    state: present
+

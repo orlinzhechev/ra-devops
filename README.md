@@ -51,7 +51,7 @@ There is an ongoing debate regarding the preferred access method for Ansible: SS
 ```
 git clone -b develop ssh://git@bitbucket.reconart.net:7999/reco/reconart.git
 ```
-4. Copy `scripts/build.bat` and `scripts/install_nugets.ps1` to the root directory of the repo
+4. Check that you have those scripts in the root directory of the repo: `build.bat` and `install_nugets.ps1`
 5. Copy ReconArt Nugets fro `\\\\bg-pld\nas001\Reconart.Nuget` to `c:\temp\Reconart.Nuget`
 6. Switch to the repo directory
 7. Execute build.bat
