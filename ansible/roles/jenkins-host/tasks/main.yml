@@ -4,6 +4,7 @@
 - include_tasks: configure_swarm.yml
 - include_tasks: service.yml
 - include_tasks: install_nginx.yml
+- include_tasks: install_tools.yml
 
 # The following tasks are not complete
 # and must be run after Jenkins is up and running
