@@ -1,0 +1,16 @@
+---
+- name: Copy update_known_hosts.ps1 to target host
+  win_copy:
+    src: "{{ role_path }}/files/update_known_hosts.ps1"
+    dest: "{{ ansible_remote_tmp }}/update_known_hosts.ps1"
+
+- name: Update known_hosts using PowerShell script
+  win_shell: "{{ ansible_remote_tmp }}\\update_known_hosts.ps1"
+  args:
+    executable: powershell.exe
+
+- name: Remove update_known_hosts.ps1 from target host
+  win_file:
+    path: "{{ ansible_remote_tmp }}/update_known_hosts.ps1"
+    state: absent
+

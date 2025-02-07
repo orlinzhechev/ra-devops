@@ -29,3 +29,5 @@
 - name: Include tasks for WiX Toolset
   include_tasks: wix.yml
 
+- name: Add bitbucket and github to known_hosts
+  include_tasks: add_ssh_known_hosts.yml
