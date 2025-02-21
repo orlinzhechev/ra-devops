@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: "Your Name"
+  description: "Role to connect a Linux machine to Jenkins using the Swarm client."
+  license: "MIT"
+  min_ansible_version: "2.9"
+dependencies: []

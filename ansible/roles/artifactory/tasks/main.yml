@@ -1,0 +1,18 @@
+---
+# Include pre-check tasks to verify mount point and disk capacity
+- include_tasks: precheck.yml
+
+# Include installation tasks to install prerequisites and Artifactory
+- include_tasks: install.yml
+
+# Include master key tasks to ensure the Artifactory master key is set up
+- include_tasks: master_key.yml
+
+- include_tasks: disable_cluster.yml
+
+# Include configuration tasks to setup data directory and manage service
+- include_tasks: configure.yml
+
+# Install and configure Nginx to work with Artifactory
+- include_tasks: nginx.yml
+

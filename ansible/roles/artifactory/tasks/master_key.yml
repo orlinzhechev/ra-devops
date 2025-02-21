@@ -1,0 +1,33 @@
+---
+- name: Ensure Artifactory security directory exists
+  file:
+    path: "{{ artifactory_security_dir }}"
+    state: directory
+    owner: "{{ artifactory_user }}"
+    group: "{{ artifactory_group }}"
+    mode: "0750"
+
+- name: Check if master.key exists in the security directory
+  stat:
+    path: "{{ artifactory_security_dir }}/master.key"
+  register: master_key_stat
+
+- name: Generate a new master key if force is enabled or key does not exist
+  shell: "openssl rand -hex 32 | tr -d '\\n'"
+  register: generated_master_key
+  when: (force_master_key_creation | default(false)) or (not master_key_stat.stat.exists)
+
+- name: Write the generated master key to file
+  copy:
+    content: "{{ generated_master_key.stdout }}"
+    dest: "{{ artifactory_security_dir }}/master.key"
+    owner: "{{ artifactory_user }}"
+    group: "{{ artifactory_group }}"
+    mode: "0600"
+  when: (force_master_key_creation | default(false)) or (not master_key_stat.stat.exists)
+
+- name: Debug - Report that master key has been set up
+  debug:
+    msg: "Artifactory master key has been successfully set up."
+  when: (force_master_key_creation | default(false)) or (not master_key_stat.stat.exists)
+

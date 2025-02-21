@@ -1,0 +1,23 @@
+---
+# Deploy the system.yaml configuration for Artifactory.
+- name: Deploy system.yaml configuration
+  template:
+    src: system.yaml.j2
+    dest: /opt/jfrog/artifactory/var/etc/system.yaml
+    owner: artifactory
+    group: artifactory
+    mode: '0644'
+  notify:
+    - Restart Artifactory
+
+# Deploy the nginx configuration for Artifactory.
+- name: Deploy nginx configuration for Artifactory
+  template:
+    src: artifactory.conf.j2
+    dest: /etc/nginx/conf.d/artifactory.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload Nginx
+

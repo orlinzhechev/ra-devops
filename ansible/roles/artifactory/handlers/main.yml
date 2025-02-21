@@ -1,0 +1,13 @@
+---
+# Handler to restart Artifactory service
+- name: Restart Artifactory
+  service:
+    name: "{{ artifactory_service_name }}"
+    state: restarted
+
+# Handler to reload Nginx
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+

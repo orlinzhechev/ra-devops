@@ -1,0 +1,21 @@
+configVersion: 1
+shared:
+  security:
+    joinKeyFile: "{{ artifactory_joinKeyFile | default('/opt/jfrog/artifactory/var/etc/security/join.key') }}"
+    masterKeyFile: "{{ artifactory_masterKeyFile | default('/opt/jfrog/artifactory/var/etc/security/master.key') }}"
+    bootstrapKeysReadTimeoutSecs: {{ artifactory_bootstrapKeysReadTimeoutSecs | default(120) }}
+  node:
+    primary: {{ artifactory_node_primary | default(false) }}
+    haEnabled: {{ artifactory_node_haEnabled | default(false) }}
+    ip: "{{ artifactory_node_ip | default('0.0.0.0') }}"
+  database:
+    allowNonPostgresql: {{ artifactory_allowNonPostgresql | default(false) }}
+    type: "{{ artifactory_database_type | default('postgresql') }}"
+    driver: "{{ artifactory_database_driver | default('org.postgresql.Driver') }}"
+    url: "{{ artifactory_database_url | default('jdbc:postgresql://localhost:5432/artifactory') }}"
+    username: "{{ artifactory_database_username | default('artifactory') }}"
+    password: "{{ artifactory_database_password }}"
+  user: "{{ artifactory_user | default('artifactory') }}"
+  group: "{{ artifactory_group | default('artifactory') }}"
+access:
+

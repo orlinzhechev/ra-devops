@@ -1,0 +1,4 @@
+---
+- include_tasks: install_java.yml
+- include_tasks: swarm_client.yml
+- include_tasks: start_stop_scripts.yml

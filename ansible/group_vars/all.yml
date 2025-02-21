@@ -1,0 +1,16 @@
+# group_vars/all.yml
+jenkins_master_url: "http://10.10.102.250:8080"
+jenkins_swarm_user: "swarmpool"
+jenkins_swarm_secret: "1154626d28893d4898fdbc4ee973b13124"
+swarm_client_dest: "{{ swarm_working_dir }}/swarm-client.jar"
+
+# Default labels for the agent
+swarm_labels: "new_agent"
+
+# Number of executors for the swarm agent
+swarm_executors: 1
+
+# Force restart of the agent on each role run
+swarm_force_restart: true
+
+auto_logon_password: "Welc0me+1"

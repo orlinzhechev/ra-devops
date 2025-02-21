@@ -1,6 +1,6 @@
 ---
 - name: Install Windows build machines
-  hosts: build_win
+  hosts: build_win_hosts
   become: yes
   become_user: administrator
   vars:
@@ -13,7 +13,7 @@
     ansible_python_interpreter: C:\Python313\python.exe
     swarm_labels: build_ra
   tasks:
-    - name: Check access
+    - name: Check access on Windows build machines
       win_ping:
   roles:
     - common-win
@@ -21,7 +21,7 @@
     - swarm-win
 
 - name: Setup Jenkins host
-  hosts: jenkins_servers
+  hosts: jenkins_hosts
   become: yes
   vars:
     ansible_user: bootstrap
@@ -29,4 +29,47 @@
     ansible_connection: ssh
   roles:
     - jenkins-host
+
+- name: Setup Artifactory server
+  hosts: artifactory_hosts
+  become: yes
+  vars:
+    ansible_user: bootstrap
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+    ansible_connection: ssh
+  roles:
+    - artifactory
+
+- name: Setup Jenkins Linux Tools Hosts
+  hosts: tools_linux_hosts
+  become: yes
+  vars:
+    ansible_user: bootstrap
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+    ansible_connection: ssh
+    swarm_labels: tools-linux
+    swarm_executors: 5
+  roles:
+    - tools-linux
+    - swarm-linux
+
+- name: Setup Jenkins Windows Tools Hosts
+  hosts: tools_win_hosts
+  become: yes
+  become_user: administrator
+  vars:
+    ansible_user: administrator
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+    ansible_connection: ssh
+    ansible_remote_tmp: C:\ansible_temp
+    ansible_shell_type: powershell
+    ansible_shell_executable: powershell
+    ansible_python_interpreter: C:\Python313\python.exe
+    swarm_labels: tools-windows
+  tasks:
+    - name: Check access on Windows build machines
+      win_ping:
+  roles:
+    - common-win
+    - swarm-win
 

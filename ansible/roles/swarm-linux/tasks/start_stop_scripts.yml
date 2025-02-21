@@ -1,0 +1,12 @@
+---
+- name: Copy Start-Agent.sh to swarm working directory
+  copy:
+    src: Start-Agent.sh
+    dest: "{{ swarm_working_dir }}/Start-Agent.sh"
+    mode: '0755'
+
+- name: Copy Stop-Agent.sh to swarm working directory
+  copy:
+    src: Stop-Agent.sh
+    dest: "{{ swarm_working_dir }}/Stop-Agent.sh"
+    mode: '0755'

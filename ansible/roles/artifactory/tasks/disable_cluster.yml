@@ -1,0 +1,34 @@
+---
+- name: Disable Artifactory clustering and set node type to standalone
+  block:
+    - name: Set artifactory.cluster.enabled to false
+      lineinfile:
+        path: "{{ artifactory_default_data_dir }}/etc/artifactory.system.properties"
+        regexp: '^artifactory\.cluster\.enabled='
+        line: 'artifactory.cluster.enabled=false'
+        create: yes
+        owner: "{{ artifactory_user }}"
+        group: "{{ artifactory_group }}"
+        mode: '0644'
+
+    - name: Clear artifactory.cluster.joinKey
+      lineinfile:
+        path: "{{ artifactory_default_data_dir }}/etc/artifactory.system.properties"
+        regexp: '^artifactory\.cluster\.joinKey='
+        line: 'artifactory.cluster.joinKey='
+        create: yes
+        owner: "{{ artifactory_user }}"
+        group: "{{ artifactory_group }}"
+        mode: '0644'
+
+    - name: Set artifactory.cluster.nodeType to standalone
+      lineinfile:
+        path: "{{ artifactory_default_data_dir }}/etc/artifactory.system.properties"
+        regexp: '^artifactory\.cluster\.nodeType='
+        line: 'artifactory.cluster.nodeType=standalone'
+        create: yes
+        owner: "{{ artifactory_user }}"
+        group: "{{ artifactory_group }}"
+        mode: '0644'
+  notify: Restart Artifactory
+

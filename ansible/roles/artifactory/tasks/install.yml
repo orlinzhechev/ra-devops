@@ -1,0 +1,32 @@
+---
+# Installation tasks for Artifactory
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install prerequisites (wget, gnupg)
+  apt:
+    name:
+      - wget
+      - gnupg
+    state: present
+
+- name: Add JFrog Artifactory GPG key
+  apt_key:
+    url: "https://releases.jfrog.io/artifactory/api/gpg/key/public"
+    state: present
+
+- name: Add Artifactory OSS repository
+  apt_repository:
+    repo: "deb [trusted=yes] https://releases.jfrog.io/artifactory/artifactory-debs/ focal main"
+    state: present
+
+- name: Update apt cache after adding Artifactory repository
+  apt:
+    update_cache: yes
+
+- name: Install JFrog Artifactory OSS package
+  apt:
+    name: "{{ artifactory_package }}"
+    state: present

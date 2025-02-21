@@ -1,0 +1,11 @@
+---
+- name: Restart Artifactory
+  service:
+    name: artifactory
+    state: restarted
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+

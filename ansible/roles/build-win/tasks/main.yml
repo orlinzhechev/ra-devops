@@ -31,3 +31,6 @@
 
 - name: Add bitbucket and github to known_hosts
   include_tasks: add_ssh_known_hosts.yml
+
+- name: Install additional tools
+  include_tasks: tools.yml

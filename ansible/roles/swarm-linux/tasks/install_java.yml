@@ -1,0 +1,5 @@
+---
+- name: Install OpenJDK 17
+  package:
+    name: openjdk-17-jdk
+    state: present

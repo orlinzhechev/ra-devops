@@ -1,0 +1,10 @@
+---
+- name: Update apt cache on Ubuntu
+  apt:
+    update_cache: yes
+
+- name: Install Ansible on Ubuntu
+  apt:
+    name: ansible
+    state: present
+

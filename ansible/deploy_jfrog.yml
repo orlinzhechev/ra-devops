@@ -1,0 +1,24 @@
+---
+- hosts: artifactory_hosts
+  become: yes
+  vars:
+    ansible_user: bootstrap
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+    ansible_connection: ssh
+  collections:
+    - jfrog.platform
+  vars_files:
+    - ./vars/artifactory-secret-vars.yml
+    - ./vars/artifactory-vars.yml
+  roles:
+    - jfrog.platform.artifactory_nginx_ssl
+    - jfrog.platform.postgres
+    - jfrog.platform.artifactory
+
+    # NOT TESTED: Applying propper WORKING configuration
+    # - artifactory-conf
+
+    # Optionally, include additional roles if needed:
+    # - jfrog.platform.distribution
+    # - jfrog.platform.xray
+

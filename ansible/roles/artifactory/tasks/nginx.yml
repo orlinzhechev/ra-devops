@@ -1,0 +1,49 @@
+---
+- name: Ensure /etc/nginx/ssl directory exists
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Check if Artifactory SSL certificate exists
+  stat:
+    path: "{{ nginx_ssl_certificate | default('/etc/nginx/ssl/artifactory.crt') }}"
+  register: artifactory_crt
+
+- name: Check if Artifactory SSL key exists
+  stat:
+    path: "{{ nginx_ssl_certificate_key | default('/etc/nginx/ssl/artifactory.key') }}"
+  register: artifactory_key
+
+- name: Generate self-signed SSL certificate and key for Artifactory if missing
+  command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048
+    -keyout "{{ nginx_ssl_certificate_key | default('/etc/nginx/ssl/artifactory.key') }}"
+    -out "{{ nginx_ssl_certificate | default('/etc/nginx/ssl/artifactory.crt') }}"
+    -subj "/CN={{ nginx_server_name | default('artifactory.reconart.net') }}"
+  when: not artifactory_crt.stat.exists or not artifactory_key.stat.exists
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Deploy Nginx configuration for Artifactory
+  template:
+    src: nginx_artifactory.conf.j2
+    dest: /etc/nginx/conf.d/artifactory.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reload Nginx
+
+- name: Ensure Nginx service is started and enabled
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+

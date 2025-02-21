@@ -1,0 +1,23 @@
+---
+# Artifactory configuration defaults
+
+artifactory_version: "7.x"
+artifactory_package: "jfrog-artifactory-oss"
+artifactory_service_name: "artifactory"
+
+# Data directory settings
+artifactory_default_data_dir: "/var/opt/jfrog/artifactory"
+artifactory_data_dir: "/mnt/artifacts"
+
+# Security directory and credentials for Artifactory
+force_master_key_creation: false
+artifactory_security_dir: "{{ artifactory_default_data_dir }}/etc/security"
+artifactory_user: "artifactory"
+artifactory_group: "artifactory"
+
+# Nginx defaults (if needed)
+nginx_server_name: "artifactory.reconart.net"
+nginx_ssl_certificate: "/etc/nginx/ssl/artifactory.crt"
+nginx_ssl_certificate_key: "/etc/nginx/ssl/artifactory.key"
+artifactory_upstream_url: "http://127.0.0.1:8081/"
+

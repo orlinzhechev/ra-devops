@@ -1,0 +1,15 @@
+#!/bin/bash
+# Log the current user to the log file
+whoami >> "{{ swarm_working_dir }}/swarm-agent.log" 2>&1
+
+# Start Jenkins Swarm Agent and log output
+java -jar "{{ swarm_working_dir }}/swarm-client.jar" \
+  -master {{ jenkins_master_url }} \
+  -username {{ jenkins_swarm_user }} \
+  -password {{ jenkins_swarm_secret }} \
+  -name {{ computer_name }} \
+  -disableSslVerification \
+  -tunnel $(echo {{ jenkins_master_url }} | sed -E 's|^.*://([^:/]+).*|\1|'):50000 \
+  -workDir "{{ swarm_working_dir }}" \
+  -executors {{ swarm_executors }}{% if swarm_labels is defined and swarm_labels != "" %} \
+  -labels "{{ swarm_labels }}"{% endif %} >> "{{ swarm_working_dir }}/swarm-agent.log" 2>&1

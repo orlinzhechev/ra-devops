@@ -1,0 +1,9 @@
+---
+# Default variables for the swarm-linux role (common variables are defined in group_vars/all.yml)
+
+
+# User to run the swarm agent service (optional, defaults to ansible_user)
+# swarm_linux_user: ""
+
+# Working directory for swarm scripts and agent files
+swarm_working_dir: "/opt/jenkins"

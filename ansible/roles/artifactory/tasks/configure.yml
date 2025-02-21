@@ -1,0 +1,46 @@
+---
+# Check if default data directory is empty
+- name: Check if default data directory is empty
+  command: "ls -A {{ artifactory_default_data_dir }}"
+  register: default_dir_content
+  changed_when: false
+  when: artifactory_data_dir != artifactory_default_data_dir
+
+# If default data directory is empty, perform data migration (remove the directory, create symlink, etc.)
+- name: Migrate data if default directory is empty
+  block:
+    - name: Stop Artifactory service to apply data directory changes
+      service:
+        name: "{{ artifactory_service_name }}"
+        state: stopped
+
+    - name: Remove the default data directory (if empty)
+      file:
+        path: "{{ artifactory_default_data_dir }}"
+        state: absent
+
+    - name: Create a symbolic link from default data directory to custom data directory
+      file:
+        src: "{{ artifactory_data_dir }}"
+        dest: "{{ artifactory_default_data_dir }}"
+        state: link
+
+    - name: Change owner of the symlink to artifactory:artifactory
+      command: chown -h {{ artifactory_user }}:{{ artifactory_group }} "{{ artifactory_default_data_dir }}"
+
+    - name: Start Artifactory service
+      service:
+        name: "{{ artifactory_service_name }}"
+        state: started
+        enabled: yes
+  when: artifactory_data_dir != artifactory_default_data_dir and (default_dir_content.stdout | trim) == ""
+
+# Warn if default data directory is not empty and migration is therefore skipped
+- name: Warn if default data directory is not empty
+  debug:
+    msg: >
+      WARNING: Default data directory ({{ artifactory_default_data_dir }})
+      is not empty. Automatic data migration is not supported.
+      Please handle data migration manually.
+  when: artifactory_data_dir != artifactory_default_data_dir and (default_dir_content.stdout | trim) != ""
+
