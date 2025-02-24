@@ -7,8 +7,22 @@ param(
     [switch]$force,           # Force upload without checking if file exists at destination
     [switch]$wipeDestinationDir,  # Delete all files in destination directory before uploading
     [switch]$DryRun,          # DryRun mode: only display status without uploading
-    [int]$limit = 0           # Limit the maximum number of files to synchronize; 0 means no limit
+    [int]$limit = 0,          # Limit the maximum number of files to synchronize; 0 means no limit
+    [string[]]$exclude       # Exclude files matching these wildcard patterns (e.g. "*.zip" or "cmd*.zip ext*.zip")
 )
+
+# Process exclude patterns: if provided as a single string with spaces, split them.
+if ($exclude) {
+    if ($exclude -is [string]) {
+        $excludePatterns = $exclude.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)
+    }
+    else {
+        $excludePatterns = $exclude
+    }
+}
+else {
+    $excludePatterns = @()
+}
 
 # Check if the API token is provided
 if (-not $pass) {
@@ -70,10 +84,8 @@ if ($files.Count -eq 0) {
     exit 0
 }
 
-# Apply file limit if specified (0 means no limit)
-if ($limit -gt 0) {
-    $files = $files | Select-Object -First $limit
-}
+# Counter for processed (non-excluded) files
+$processedCount = 0
 
 foreach ($file in $files) {
     $filePath = $file.FullName
@@ -91,6 +103,22 @@ foreach ($file in $files) {
 
     # Construct the complete upload URL preserving the subdirectory structure
     $uploadUrl = $destURL + $relativePath
+
+    # Check for exclude patterns based on the file name
+    $isExcluded = $false
+    foreach ($pattern in $excludePatterns) {
+        if ($file.Name -like $pattern) {
+            Write-Host "Excluded: $relativePath ($uploadUrl)"
+            $isExcluded = $true
+            break
+        }
+    }
+    if ($isExcluded) { continue }
+
+    # Increment the counter for processed files
+    $processedCount++
+    # If limit is set and reached, exit the loop
+    if ($limit -gt 0 -and $processedCount -gt $limit) { break }
 
     if ($DryRun) {
         # In DryRun mode, check file status and display target name and path without uploading
