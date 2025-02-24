@@ -1,6 +1,6 @@
 ---
 - name: Install Windows build machines
-  hosts: build_win_hosts
+  hosts: build_win
   become: yes
   become_user: administrator
   vars:
@@ -21,7 +21,7 @@
     - swarm-win
 
 - name: Setup Jenkins host
-  hosts: jenkins_hosts
+  hosts: jenkins_host
   become: yes
   vars:
     ansible_user: bootstrap
@@ -41,7 +41,7 @@
     - artifactory
 
 - name: Setup Jenkins Linux Tools Hosts
-  hosts: tools_linux_hosts
+  hosts: tools_linux
   become: yes
   vars:
     ansible_user: bootstrap
@@ -54,7 +54,7 @@
     - swarm-linux
 
 - name: Setup Jenkins Windows Tools Hosts
-  hosts: tools_win_hosts
+  hosts: tools_windows
   become: yes
   become_user: administrator
   vars:

@@ -1,61 +1,109 @@
-# ra-devops
-ReconArt DevOps repository
+# I. Preparation
 
-This is an initial commit, tested once on a Windows machine but requires retesting.
-The testing environment is set up on Orlin's laptop:
-- **tools**: Ubuntu machine used to orchestrate the environment, running on VBox.
-- **win11**: Windows 11 Pro machine used to test the Ansible setup, running on Hyper-V.
+## 1. Creating a Template from an Existing Machine
 
-### Known Issues on Windows
-For Windows, SSH access needs to be configured using OpenSSH keys (password-based authentication is not supported). 
-
-There is an ongoing debate regarding the preferred access method for Ansible: SSH or WinRM. Historically, WinRM was the default method, but current documentation suggests that SSH is also a valid option. We will determine the better option during testing.
-
-## Usage
-1. Install a new Windows machine.
-2. Create a user **bootstrap** (pass t-r).
-3. Run the following PowerShell script as administrator:  
-   `scripts\win_initial_setup.ps1`
-4. Ensure you have the `~/.ssh/bootstrap_rsa` private key available.
-5. Test SSH access to the machine:  
-   `ssh -i ~/.ssh/bootstrap_rsa bootstrap@192.168.57.11 'echo "Connection successful"'`  
-   You should receive the following:  
-   `Connection successful`
-6. Test Ansible access:  
-   `cd ansible`  
-   `ansible-playbook -i inventory.ini ping.yml`  
-   Expected output:  
-
-    ```
-    PLAY [Test connections to windows hosts] **********************************************************************
-
-    TASK [Gathering Facts] ****************************************************************************************
-    ok: [windows]
-
-    TASK [Check access] *******************************************************************************************
-    ok: [windows]
-
-    PLAY RECAP ****************************************************************************************************
-    windows                    : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-
-    ```
-
-7. Run the `build_win.yml` playbook. It installs all needed software to build ReconArt.sln
-   `cd ansible`
-   `ansible-playbook -i inventory.ini build_win.yml'
-
-## How to build ReconArt Relase
-1. SSH to the build machine
-2. Set propper SSH key to use for bitbucket access
-3. Checkout the reconart repo
+```sh
+cd scripts/hyper-v
+.\Fetch-VM-Config.ps1 -VMName VRASOF10BUILD01 -HyperVServer prasof10 -GenerateTemplate -OutputFile template-config-build.json
 ```
-git clone -b develop ssh://git@bitbucket.reconart.net:7999/reco/reconart.git
+
+The output will be stored in the `output` directory.
+
+This script extracts the configuration of an existing machine and saves it as a template, which can later be used to create a new machine with another script.
+
+## 2. Creating a Machine from a Template
+
+```sh
+.\Create-VM.ps1 -VMName "VRASOF10BUILD03" -TargetPath "E:\Hyper-V" -ConfigFile .\output\template-config-build.json -HyperVServer prasof10 -DryRun
 ```
-4. Check that you have those scripts in the root directory of the repo: `build.bat` and `install_nugets.ps1`
-5. Copy ReconArt Nugets fro `\\\\bg-pld\nas001\Reconart.Nuget` to `c:\temp\Reconart.Nuget`
-6. Switch to the repo directory
-7. Execute build.bat
+
+Remove `-DryRun` to actually create the VM.
+
+## 3. Installing the Operating System
+
+Start the machine and follow the installation steps.
+
+## 4. Initial Setup
+
+- Open the `win_initial_setup.ps1` script:
+  ```sh
+  cat win_initial_setup.ps1
+  ```
+- Copy the content.
+- Create a file on the desktop named `win_initial_setup.ps1` and paste the content.
+- Run the script by right-clicking it and selecting `Run with PowerShell`.
+
+## 5. Checking the IP Address
+
+Run the following command:
+
+```sh
+ipconfig
 ```
-.\build.bat 2022 rebuild
+
+## 6. Testing SSH Access
+
+```sh
+ssh administrator@IP_ADDRESS
 ```
-8. Cross fingers! The build takes 10 minutes on 8 core 8GB VM
+
+# II. Ansible Setup
+
+## 1. Access Jenkins
+
+Go to [Jenkins](https://jenkins.reconart.net).
+
+## 2. Adding the Machine for Access
+
+Use the Jenkins job [setup-add-ssh-host](https://jenkins.reconart.net/view/Setup%20Jobs/job/setup-add-ssh-host/).
+
+- Execute **Build with Parameters** and set the IP and the user (`administrator` for Windows OS and `bootstrap` for Linux).
+- This allows access to the machine from the Linux **Tools** machine.
+
+## 3. Setting Up the Machine as a Build Machine
+
+Use the Jenkins job [setup-base-pipeline](https://jenkins.reconart.net/view/Setup%20Jobs/job/setup-base-pipeline/).
+
+- **HOST\_IP** - the IP of the new machine
+- **ANSIBLE\_ROLE**: `build_win_hosts`
+- **MACHINE\_NAME**: `VRASOFBUILDxx`
+- **GIT\_USER**: (user to access the repo at GitHub)
+- **GIT\_BRANCH**: Git branch to use
+
+`GIT_USER` and `GIT_BRANCH` should be changed only when working on the `ra-devops` repo.
+
+Hit **Build**! The process takes approximately 30 minutes.
+
+## 4. Verifying the Machine in Jenkins
+
+If everything is set up correctly, the machine should appear in the Jenkins agent list: [Jenkins Agents](https://jenkins.reconart.net/computer/).
+
+A suffix will be added to the name automatically when the Swarm agent connects (dynamic agent connection in Jenkins) to avoid potential duplicate name issues.
+
+You can check the machine's labels by clicking on the new machine and reviewing **Labels**. The label `build_ra` should be present, indicating that the machine is available as a build machine for the ReconArt product.
+
+## 5. Trusting bitbucket.reconart.net:7999
+
+1. Open an SSH session to the build machine:
+   ```sh
+   ssh administrator@<new_machine_ip>
+   ```
+
+2. Attempt an SSH connection manually to trigger the trust prompt:
+   ```sh
+   ssh -p 7999 git@bitbucket.reconart.net
+   ```
+   If prompted, confirm adding the host to `known_hosts`.
+
+3. Alternatively, use Git to fetch a repository, which will also prompt for trust:
+   ```sh
+   mkdir temp
+   cd temp
+   git init
+   git fetch --no-tags --force --progress --depth=1 -- ssh://git@bitbucket.reconart.net:7999/~orlin.zhechev/reconart.git +refs/heads/*:refs/remotes/origin/*
+   ```
+   This will prompt to add the host to `known_hosts`.
+
+After this step, the build process should be able to start without SSH-related trust issues.
+
+
