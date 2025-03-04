@@ -1,0 +1,38 @@
+---
+- name: Install Nginx
+  apt:
+    name:
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+
+- name: Ensure SSL directory exists
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Configure Nginx for monitoring
+  template:
+    src: monitoring-nginx.conf.j2
+    dest: /etc/nginx/sites-available/monitoring
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nginx
+
+- name: Enable monitoring Nginx config
+  file:
+    src: /etc/nginx/sites-available/monitoring
+    dest: /etc/nginx/sites-enabled/monitoring
+    state: link
+  notify: reload nginx
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx

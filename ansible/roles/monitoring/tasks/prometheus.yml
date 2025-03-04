@@ -1,0 +1,38 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install required packages
+  apt:
+    name:
+      - python3-pip
+      - acl
+    state: present
+
+- name: Create monitoring data directory on mounted disk
+  file:
+    path: "{{ prometheus_db_dir }}"
+    state: directory
+    mode: 0755
+    owner: prometheus
+    group: prometheus
+  # This may fail on first run since prometheus user doesn't exist yet
+  ignore_errors: yes
+
+# The Prometheus server will be installed directly from the playbook
+# This task just creates the necessary target directories
+
+- name: Create directories for target files
+  file:
+    path: "/etc/prometheus/targets/{{ item }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+  with_items:
+    - nodes
+    - build
+    - jenkins
+    - artifactory

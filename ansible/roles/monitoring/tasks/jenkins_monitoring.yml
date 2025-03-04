@@ -1,0 +1,19 @@
+---
+# jenkins_monitoring.yml - Tasks to configure Jenkins monitoring in Prometheus
+
+- name: Ensure Prometheus scrape_configs directory exists
+  file:
+    path: /etc/prometheus/scrape_configs
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+
+- name: Add Jenkins scrape configuration
+  template:
+    src: jenkins-scrape.yml.j2
+    dest: /etc/prometheus/scrape_configs/jenkins.yml
+    owner: prometheus
+    group: prometheus
+    mode: 0644
+  notify: reload prometheus

@@ -1,0 +1,17 @@
+---
+# Prometheus configuration
+prometheus_version: 3.2.1
+prometheus_web_listen_address: "127.0.0.1:9090"
+prometheus_storage_retention: "60d"
+prometheus_web_external_url: "http://monitoring.reconart.net"
+prometheus_db_dir: "/mnt/data/prometheus"
+
+# Nginx configuration
+monitoring_nginx_server_name: "monitoring.reconart.net"
+monitoring_nginx_proxy_port: 9090
+
+# Jenkins monitoring configuration
+jenkins_host: "jenkins.reconart.net"
+jenkins_port: 443
+jenkins_scheme: "https"
+jenkins_tls_skip_verify: false  # Set to true if using self-signed certificates

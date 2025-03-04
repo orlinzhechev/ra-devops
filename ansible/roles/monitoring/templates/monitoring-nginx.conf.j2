@@ -1,0 +1,30 @@
+# Nginx configuration for monitoring
+server {
+    listen 80;
+    listen 443 ssl;
+    server_name {{ monitoring_nginx_server_name }};
+
+    # SSL Configuration
+    ssl_certificate      /etc/nginx/ssl/reconart_net_chain.crt;
+    ssl_certificate_key  /etc/nginx/ssl/wildcard_reconart_net.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    access_log /var/log/nginx/monitoring.access.log;
+    error_log /var/log/nginx/monitoring.error.log;
+
+    location / {
+        proxy_pass http://localhost:{{ monitoring_nginx_proxy_port }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Basic authentication (optional, uncomment and modify if needed)
+    # auth_basic "Monitoring";
+    # auth_basic_user_file /etc/nginx/.htpasswd;
+}

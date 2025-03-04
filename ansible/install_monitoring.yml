@@ -1,0 +1,80 @@
+---
+# install_monitoring.yml - Playbook for monitoring server installation
+#
+# Prerequisites:
+# Before running this playbook, install the required collections:
+#   ansible-galaxy collection install -r roles/monitoring/requirements.yml
+#
+# How to use this playbook:
+#
+# 1. For first-time installation or to update Prometheus binary:
+#    ansible-playbook -i inventory.ini install_monitoring.yml -e "run_prometheus_install=true"
+#
+# 2. For configuration changes only (default behavior):
+#    ansible-playbook -i inventory.ini install_monitoring.yml
+#
+- name: Install monitoring server
+  hosts: monitoring_host
+  become: yes
+  vars:
+    ansible_user: bootstrap
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    # Safety checks before installing Prometheus
+    - name: Check if /mnt/data directory exists
+      stat:
+        path: /mnt/data
+      register: mnt_data_stat
+      when: run_prometheus_install | default(false)
+
+    - name: Fail if /mnt/data directory does not exist
+      fail:
+        msg: "The /mnt/data directory does not exist. Please create it before proceeding."
+      when:
+        - run_prometheus_install | default(false)
+        - not mnt_data_stat.stat.exists
+
+    - name: Get mount information
+      command: mount
+      register: mount_output
+      changed_when: false
+      when: run_prometheus_install | default(false)
+
+    - name: Check if /mnt/data is mounted
+      fail:
+        msg: "The /mnt/data directory is not mounted. Please mount it before proceeding."
+      when:
+        - run_prometheus_install | default(false)
+        - "'/mnt/data' not in mount_output.stdout"
+
+    - name: Ensure Prometheus data directory exists with correct permissions
+      file:
+        path: "/mnt/data/prometheus"
+        state: directory
+        owner: prometheus
+        group: prometheus
+        mode: 0755
+      # This may fail if prometheus user doesn't exist yet
+      ignore_errors: yes
+      when: run_prometheus_install | default(false)
+
+  roles:
+    # First include the prometheus role from the collection
+    # This role only runs when explicitly enabled with -e "run_prometheus_install=true"
+    - role: prometheus.prometheus.prometheus
+      when: run_prometheus_install | default(false)
+      vars:
+        # Basic scrape configuration
+        prometheus_scrape_configs:
+          - job_name: 'prometheus'
+            static_configs:
+              - targets: ['localhost:9090']
+
+    # Then include our custom monitoring role for additional configuration
+    # This role always runs
+    - role: monitoring

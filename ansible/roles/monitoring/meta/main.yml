@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: ReconArt DevOps
+  description: Role for setting up monitoring with Prometheus
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
+
+dependencies: []

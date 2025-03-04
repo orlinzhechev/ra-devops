@@ -1,0 +1,9 @@
+---
+- name: Include prometheus tasks
+  ansible.builtin.import_tasks: prometheus.yml
+
+- name: Include nginx tasks
+  ansible.builtin.import_tasks: nginx.yml
+
+- name: Include Jenkins monitoring tasks
+  include_tasks: jenkins_monitoring.yml
