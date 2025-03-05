@@ -1,0 +1,17 @@
+---
+- name: Create data sources directory
+  file:
+    path: /etc/grafana/provisioning/datasources
+    state: directory
+    owner: root
+    group: grafana
+    mode: 0750
+
+- name: Configure Prometheus data source
+  template:
+    src: prometheus-datasource.yml.j2
+    dest: /etc/grafana/provisioning/datasources/prometheus.yml
+    owner: root
+    group: grafana
+    mode: 0640
+  notify: restart grafana

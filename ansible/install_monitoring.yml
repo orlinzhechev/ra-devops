@@ -64,8 +64,11 @@
       when: run_prometheus_install | default(false)
 
   roles:
-    # First include the prometheus role from the collection
-    # This role only runs when explicitly enabled with -e "run_prometheus_install=true"
+    # Apply common Linux configuration first
+    - role: common-linux
+    
+    # Then include the prometheus role from the collection
+    # NOTE: This role only runs when explicitly enabled with -e "run_prometheus_install=true"
     - role: prometheus.prometheus.prometheus
       when: run_prometheus_install | default(false)
       vars:

@@ -1,0 +1,17 @@
+---
+- name: Create organizations directory
+  file:
+    path: /etc/grafana/provisioning/organizations
+    state: directory
+    owner: root
+    group: grafana
+    mode: 0750
+
+- name: Configure ReconArt organization
+  template:
+    src: reconart-organization.yml.j2
+    dest: /etc/grafana/provisioning/organizations/reconart.yml
+    owner: root
+    group: grafana
+    mode: 0640
+  notify: restart grafana

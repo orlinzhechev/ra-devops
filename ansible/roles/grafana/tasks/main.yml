@@ -1,0 +1,21 @@
+---
+# Install Grafana
+- name: Install Grafana using grafana.grafana collection
+  ansible.builtin.include_role:
+    name: grafana.grafana.grafana
+
+# Fix organization name directly in database
+- name: Fix organization name
+  ansible.builtin.import_tasks: fix_organization_name.yml
+
+# Include nginx configuration
+- name: Include nginx tasks
+  ansible.builtin.import_tasks: nginx.yml
+
+# Include organization configuration
+- name: Include organization tasks
+  ansible.builtin.import_tasks: organizations.yml
+
+# Include datasource configuration
+- name: Include datasource tasks
+  ansible.builtin.import_tasks: datasources.yml

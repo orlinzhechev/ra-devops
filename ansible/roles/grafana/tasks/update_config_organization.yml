@@ -1,0 +1,17 @@
+---
+- name: Set organization name in Grafana configuration
+  lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: '^org_name ='
+    line: 'org_name = ReconArt'
+    insertafter: '^\[org\]'
+    state: present
+  notify: restart grafana
+  
+- name: Ensure [org] section exists in configuration
+  lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: '^\[org\]'
+    line: '[org]'
+    state: present
+  notify: restart grafana

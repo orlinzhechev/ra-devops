@@ -1,0 +1,21 @@
+---
+# Update the organization name directly in the SQLite database
+- name: Install sqlite3
+  apt:
+    name: sqlite3
+    state: present
+
+- name: Stop Grafana service
+  systemd:
+    name: grafana-server
+    state: stopped
+
+- name: Update organization name directly in SQLite database
+  command: sqlite3 /var/lib/grafana/grafana.db "UPDATE org SET name='ReconArt' WHERE id=1;"
+  args:
+    executable: /bin/bash
+
+- name: Start Grafana service
+  systemd:
+    name: grafana-server
+    state: started

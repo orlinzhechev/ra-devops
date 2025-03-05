@@ -1,0 +1,28 @@
+---
+# install_grafana.yml - Playbook for Grafana installation with Nginx
+#
+# Prerequisites:
+# Before running this playbook, install the required collections:
+#   ansible-galaxy collection install -r roles/grafana/requirements.yml
+#
+# How to use this playbook:
+#   ansible-playbook -i inventory.ini install_grafana.yml
+#
+
+- name: Install Grafana server
+  hosts: grafana_host
+  become: yes
+  vars:
+    ansible_user: bootstrap
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+  roles:
+    # Apply common Linux configuration first
+    - role: common-linux
+    - role: grafana

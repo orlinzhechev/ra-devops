@@ -1,0 +1,30 @@
+---
+# Grafana configuration variables
+grafana_version: "10.2.3"
+grafana_address: "0.0.0.0"
+grafana_port: 3000
+
+# Admin user
+grafana_admin_user: "admin"
+grafana_admin_password: "admin"  # Change this in production
+
+# Security settings
+grafana_security:
+  admin_user: "{{ grafana_admin_user }}"
+  admin_password: "{{ grafana_admin_password }}"
+
+# Server settings
+grafana_server:
+  domain: "grafana.reconart.net"
+  protocol: http
+  http_port: "{{ grafana_port }}"
+  addr: "{{ grafana_address }}"
+
+# Nginx settings
+grafana_hostname: "grafana.reconart.net"
+grafana_ssl_enabled: true
+grafana_ssl_cert_path: "/etc/nginx/ssl/reconart_net_chain.crt"
+grafana_ssl_key_path: "/etc/nginx/ssl/wildcard_reconart_net.key"
+
+# Prometheus data source
+prometheus_url: "https://monitoring.reconart.net"

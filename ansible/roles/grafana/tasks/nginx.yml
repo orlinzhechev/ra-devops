@@ -1,0 +1,36 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Ensure SSL directory exists
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Configure Nginx for Grafana
+  template:
+    src: grafana-nginx.conf.j2
+    dest: /etc/nginx/sites-available/grafana
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nginx
+
+- name: Enable Grafana Nginx config
+  file:
+    src: /etc/nginx/sites-available/grafana
+    dest: /etc/nginx/sites-enabled/grafana
+    state: link
+  notify: reload nginx
+
+- name: Remove default Nginx site if it exists
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  ignore_errors: yes
+  notify: reload nginx

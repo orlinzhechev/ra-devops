@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: {{ prometheus_url }}
+    isDefault: true
+    version: 1
+    editable: true
+    orgId: 1
+    jsonData:
+      timeInterval: 15s
+      httpMethod: GET
+    # This label will show "ReconArt" in the datasource list
+    label: ReconArt
