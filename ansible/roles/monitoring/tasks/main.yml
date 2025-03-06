@@ -7,3 +7,6 @@
 
 - name: Include Jenkins monitoring tasks
   include_tasks: jenkins_monitoring.yml
+
+- name: Include Artifactory monitoring tasks
+  include_tasks: artifactory_monitoring.yml

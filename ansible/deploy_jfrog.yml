@@ -11,12 +11,15 @@
     - ./vars/artifactory-secret-vars.yml
     - ./vars/artifactory-vars.yml
   roles:
-    - jfrog.platform.artifactory_nginx_ssl
-    - jfrog.platform.postgres
-    - jfrog.platform.artifactory
+    - role: jfrog.platform.artifactory_nginx_ssl
+      when: run_artifactory_install | default(false)
+    - role: jfrog.platform.postgres
+      when: run_artifactory_install | default(false)
+    - role: jfrog.platform.artifactory
+      when: run_artifactory_install | default(false)
 
     # NOT TESTED: Applying propper WORKING configuration
-    # - artifactory-conf
+    - artifactory-conf
 
     # Optionally, include additional roles if needed:
     # - jfrog.platform.distribution

@@ -16,7 +16,7 @@ artifactory_user: "artifactory"
 artifactory_group: "artifactory"
 
 # Nginx defaults (if needed)
-nginx_server_name: "artifactory.reconart.net"
+nginx_server_name: "{{ artifactory_server_name }}"
 nginx_ssl_certificate: "/etc/nginx/ssl/artifactory.crt"
 nginx_ssl_certificate_key: "/etc/nginx/ssl/artifactory.key"
 artifactory_upstream_url: "http://127.0.0.1:8081/"

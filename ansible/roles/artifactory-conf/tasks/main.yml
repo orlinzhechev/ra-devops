@@ -21,3 +21,7 @@
   notify:
     - Reload Nginx
 
+# Include monitoring setup tasks if enabled
+- name: Set up Prometheus monitoring
+  include_tasks: monitoring.yml
+  when: artifactory_monitoring_enabled | bool

@@ -1,0 +1,14 @@
+[Unit]
+Description=Artifactory Metrics Exporter
+After=network.target artifactory.service
+
+[Service]
+User={{ artifactory_exporter_user }}
+Group={{ artifactory_exporter_group }}
+WorkingDirectory={{ artifactory_exporter_dir }}
+ExecStart={{ artifactory_exporter_dir }}/venv/bin/python {{ artifactory_exporter_dir }}/artifactory_exporter.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+import json
+import time
+import requests
+from prometheus_client import start_http_server, Gauge
+
+# Define metrics
+jvm_heap_used = Gauge('artifactory_jvm_heap_used_bytes', 'JVM heap memory used')
+jvm_heap_max = Gauge('artifactory_jvm_heap_max_bytes', 'JVM maximum heap memory')
+jvm_non_heap_used = Gauge('artifactory_jvm_non_heap_used_bytes', 'JVM non-heap memory used')
+jvm_non_heap_max = Gauge('artifactory_jvm_non_heap_max_bytes', 'JVM maximum non-heap memory')
+free_physical_memory = Gauge('artifactory_system_free_memory_bytes', 'Free physical memory')
+total_physical_memory = Gauge('artifactory_system_total_memory_bytes', 'Total physical memory')
+free_swap_space = Gauge('artifactory_system_free_swap_bytes', 'Free swap space')
+total_swap_space = Gauge('artifactory_system_total_swap_bytes', 'Total swap space')
+process_cpu_load = Gauge('artifactory_process_cpu_load', 'Process CPU load')
+system_cpu_load = Gauge('artifactory_system_cpu_load', 'System CPU load')
+open_file_descriptors = Gauge('artifactory_open_file_descriptors', 'Number of open file descriptors')
+max_file_descriptors = Gauge('artifactory_max_file_descriptors', 'Maximum number of file descriptors')
+thread_count = Gauge('artifactory_thread_count', 'JVM thread count')
+uptime = Gauge('artifactory_uptime_seconds', 'JVM uptime in seconds')
+committed_virtual_memory = Gauge('artifactory_committed_virtual_memory_bytes', 'Committed virtual memory size')
+number_of_cores = Gauge('artifactory_number_of_cores', 'Number of CPU cores')
+
+def update_metrics():
+    try:
+        response = requests.get('{{ artifactory_api_url }}')
+        data = response.json()
+
+        jvm_heap_used.set(data['heapMemoryUsage'])
+        jvm_heap_max.set(data['heapMemoryMax'])
+        jvm_non_heap_used.set(data['noneHeapMemoryUsage'])
+        jvm_non_heap_max.set(data['noneHeapMemoryMax'])
+        free_physical_memory.set(data['freePhysicalMemorySize'])
+        total_physical_memory.set(data['totalPhysicalMemorySize'])
+        free_swap_space.set(data['freeSwapSpaceSize'])
+        total_swap_space.set(data['totalSwapSpaceSize'])
+        process_cpu_load.set(data['processCpuLoad'])
+        system_cpu_load.set(data['systemCpuLoad'])
+        open_file_descriptors.set(data['openFileDescriptorCount'])
+        max_file_descriptors.set(data['maxFileDescriptorCount'])
+        thread_count.set(data['threadCount'])
+        uptime.set(data['jvmUpTime'] / 1000)  # Convert to seconds
+        committed_virtual_memory.set(data['committedVirtualMemorySize'])
+        number_of_cores.set(data['numberOfCores'])
+    except Exception as e:
+        print(f"Error fetching metrics: {e}")
+
+if __name__ == '__main__':
+    # Expose metrics on port {{ artifactory_exporter_port }}
+    start_http_server({{ artifactory_exporter_port }}, addr='127.0.0.1')
+    while True:
+        update_metrics()
+        time.sleep({{ artifactory_metrics_update_interval }})

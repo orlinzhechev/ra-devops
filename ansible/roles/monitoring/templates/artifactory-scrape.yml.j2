@@ -1,0 +1,12 @@
+# Artifactory monitoring configuration
+scrape_configs:
+  - job_name: 'artifactory'
+    metrics_path: /metrics/artifactory
+    scheme: https
+    tls_config:
+      insecure_skip_verify: {{ artifactory_tls_skip_verify | default(false) }}
+    static_configs:
+      - targets:
+        - {{ artifactory_host }}
+        labels:
+          instance: artifactory

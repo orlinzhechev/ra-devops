@@ -38,12 +38,11 @@ database:
     port: 5432
     name: "artifactory"
     username: "artifactory"
-    password: "{{ database_password }}"
+    password: "{{ artifactory_database_password }}"
     owner: "artifactory"
     enabled: true
 
 # Nginx reverse proxy configuration
-server_name: "artifactory.reconart.net"
 artifactory_nginx_ssl_enabled: true
 ssl_certificate_install: false
 ssl_certificate_path: "/etc/nginx/ssl"

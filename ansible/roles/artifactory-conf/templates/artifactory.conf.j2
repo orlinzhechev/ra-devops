@@ -19,7 +19,7 @@ ssl_prefer_server_ciphers on;
 
 server {
     listen 443 ssl http2;
-    server_name {{ server_name | default("artifactory.reconart.net") }};
+    server_name {{ artifactory_server_name }};
 
     if ($http_x_forwarded_proto = "") {
         set $http_x_forwarded_proto $scheme;

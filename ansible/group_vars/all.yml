@@ -14,3 +14,8 @@ swarm_executors: 1
 swarm_force_restart: true
 
 auto_logon_password: "Welc0me+1"
+
+artifactory_server_name: "artifactory.reconart.net"
+jenkins_server_name: "jenkins.reconart.net"
+monitoring_server_name: "monitoring.reconart.net"
+grafana_server_name: "grafana.reconart.net"

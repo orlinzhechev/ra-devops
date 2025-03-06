@@ -1,0 +1,62 @@
+---
+# Setup Artifactory exporter for Prometheus monitoring
+
+- name: Install required packages
+  package:
+    name: python3-venv
+    state: present
+
+- name: Create exporter directory
+  file:
+    path: "{{ artifactory_exporter_dir }}"
+    state: directory
+    owner: "{{ artifactory_exporter_user }}"
+    group: "{{ artifactory_exporter_group }}"
+    mode: '0755'
+
+- name: Create Python virtualenv
+  pip:
+    virtualenv: "{{ artifactory_exporter_dir }}/venv"
+    name:
+      - prometheus-client
+      - requests
+    virtualenv_command: python3 -m venv
+
+- name: Deploy Artifactory exporter script
+  template:
+    src: artifactory_exporter.py.j2
+    dest: "{{ artifactory_exporter_dir }}/artifactory_exporter.py"
+    owner: "{{ artifactory_exporter_user }}"
+    group: "{{ artifactory_exporter_group }}"
+    mode: '0755'
+
+- name: Create systemd service for Artifactory exporter
+  template:
+    src: artifactory-exporter.service.j2
+    dest: /etc/systemd/system/artifactory-exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart Artifactory Exporter
+
+- name: Update Nginx configuration to expose metrics endpoint
+  blockinfile:
+    path: /etc/nginx/conf.d/artifactory.conf
+    insertbefore: "}"  # Insert before the closing brace of the server block
+    block: |
+
+        # Artifactory Prometheus metrics endpoint
+        location /metrics/artifactory {
+            proxy_pass http://127.0.0.1:{{ artifactory_exporter_port }}/metrics;
+        }
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - ARTIFACTORY EXPORTER"
+  notify:
+    - Reload Nginx
+
+- name: Enable and start Artifactory exporter service
+  systemd:
+    name: artifactory-exporter
+    enabled: yes
+    state: started
+    daemon_reload: yes

@@ -1,0 +1,18 @@
+---
+# artifactory_monitoring.yml - Tasks to configure Artifactory monitoring in Prometheus
+- name: Ensure Prometheus scrape_configs directory exists
+  file:
+    path: /etc/prometheus/scrape_configs
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+
+- name: Add Artifactory scrape configuration
+  template:
+    src: artifactory-scrape.yml.j2
+    dest: /etc/prometheus/scrape_configs/artifactory.yml
+    owner: prometheus
+    group: prometheus
+    mode: 0644
+  notify: reload prometheus

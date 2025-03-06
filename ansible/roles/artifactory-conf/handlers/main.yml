@@ -9,3 +9,8 @@
     name: nginx
     state: reloaded
 
+- name: Restart Artifactory Exporter
+  systemd:
+    name: artifactory-exporter
+    state: restarted
+    daemon_reload: yes

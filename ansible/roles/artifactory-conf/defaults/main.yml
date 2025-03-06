@@ -1,0 +1,9 @@
+---
+# Monitoring settings
+artifactory_monitoring_enabled: true
+artifactory_exporter_port: 9256
+artifactory_exporter_dir: /opt/artifactory_exporter
+artifactory_exporter_user: artifactory
+artifactory_exporter_group: artifactory
+artifactory_api_url: "http://localhost/artifactory/api/system/info"
+artifactory_metrics_update_interval: 30  # in seconds
