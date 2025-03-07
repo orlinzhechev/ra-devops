@@ -1,0 +1,16 @@
+---
+- name: restart windows_exporter
+  win_service:
+    name: windows_exporter
+    state: restarted
+
+- name: restart mssql_service
+  win_service:
+    name: MSSQLSERVER
+    state: restarted
+
+- name: restart mssql_exporter
+  win_service:
+    name: mssql_exporter
+    state: restarted
+

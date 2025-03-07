@@ -1,5 +1,5 @@
 - targets:
-  - 'mssql01.example.com:9187'  # SQL Server exporter typically uses port 9187
+  - '10.10.102.102:4000'
   labels:
     environment: test
     role: database

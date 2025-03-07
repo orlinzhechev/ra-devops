@@ -1,0 +1,112 @@
+---
+# Install MS SQL Server Exporter
+- name: Create directory for MS SQL Server Exporter
+  win_file:
+    path: C:\Program Files\mssql_exporter
+    state: directory
+
+- name: Download MS SQL Server Exporter
+  win_get_url:
+    url: https://github.com/awaragi/prometheus-mssql-exporter/archive/refs/tags/v1.3.0.zip
+    dest: C:\Windows\Temp\mssql_exporter.zip
+    timeout: 60
+
+- name: Extract MS SQL Server Exporter
+  win_unzip:
+    src: C:\Windows\Temp\mssql_exporter.zip
+    dest: C:\Program Files\
+    creates: C:\Program Files\prometheus-mssql-exporter-1.3.0
+
+- name: Rename extracted directory
+  win_shell: |
+    if (Test-Path "C:\Program Files\prometheus-mssql-exporter-1.3.0") {
+      if (Test-Path "C:\Program Files\mssql_exporter") {
+        Remove-Item -Path "C:\Program Files\mssql_exporter" -Recurse -Force
+      }
+      Move-Item -Path "C:\Program Files\prometheus-mssql-exporter-1.3.0" -Destination "C:\Program Files\mssql_exporter" -Force
+    }
+  args:
+    creates: C:\Program Files\mssql_exporter\src\index.js
+
+- name: Install NPM dependencies
+  win_shell: |
+    cd "C:\Program Files\mssql_exporter"
+    npm install
+  args:
+    creates: C:\Program Files\mssql_exporter\node_modules
+
+- name: Create MS SQL Server Exporter configuration
+  win_template:
+    src: mssql_exporter_config.json.j2
+    dest: C:\Program Files\mssql_exporter\config.json
+
+- name: Install NSSM for service management
+  win_chocolatey:
+    name: nssm
+    state: present
+
+- name: Create logs directory
+  win_file:
+    path: C:\Program Files\mssql_exporter\logs
+    state: directory
+
+- name: Check if MS SQL Server Exporter service exists
+  win_shell: |
+    Get-Service -Name "mssql_exporter*" -ErrorAction SilentlyContinue | ForEach-Object {
+        $_.Name
+    }
+  register: existing_services
+  changed_when: false
+
+- name: Remove existing services
+  win_shell: |
+    Stop-Service "{{ item }}" -Force -ErrorAction SilentlyContinue
+    sc.exe delete "{{ item }}"
+  with_items: "{{ existing_services.stdout_lines }}"
+  when: existing_services.stdout_lines | length > 0
+
+- name: Wait for service deletion to complete
+  win_shell: Start-Sleep -Seconds 10
+  when: existing_services.stdout_lines | length > 0
+
+- name: Create batch file wrapper for MS SQL Server Exporter
+  win_copy:
+    dest: "C:\\Program Files\\mssql_exporter\\start_exporter.bat"
+    content: |
+      @echo off
+      cd /d "C:\Program Files\mssql_exporter"
+      set NODE_PATH="C:\Program Files\mssql_exporter\node_modules"
+      set DEBUG={{ mssql_debug }}
+      set SERVER={{ mssql_server }}
+      set PORT={{ mssql_port }}
+      set USERNAME={{ mssql_user }}
+      set PASSWORD={{ mssql_password }}
+      set AUTHENTICATION={{ mssql_authentication }}
+      set ENCRYPT={{ mssql_encrypt | default(false) | lower }}
+      set TRUSTSERVERCERTIFICATE={{ mssql_trust_server_certificate | default(false) | lower }}
+      "C:\Program Files\nodejs\node.exe" "C:\Program Files\mssql_exporter\src\index.js"
+
+- name: Create MS SQL Server Exporter service
+  win_shell: |
+    nssm install mssql_exporter_service "C:\Program Files\mssql_exporter\start_exporter.bat"
+    nssm set mssql_exporter_service AppDirectory "C:\Program Files\mssql_exporter"
+    nssm set mssql_exporter_service DisplayName "Prometheus MS SQL Server Exporter"
+    nssm set mssql_exporter_service Description "Exports MS SQL Server metrics for Prometheus"
+    nssm set mssql_exporter_service Start SERVICE_AUTO_START
+    nssm set mssql_exporter_service AppStdout "C:\Program Files\mssql_exporter\logs\stdout.log"
+    nssm set mssql_exporter_service AppStderr "C:\Program Files\mssql_exporter\logs\stderr.log"
+
+- name: Start MS SQL Server Exporter service
+  win_service:
+    name: mssql_exporter_service
+    state: started
+
+- name: Add firewall rule for MS SQL Server Exporter
+  win_firewall_rule:
+    name: "MS SQL Server Exporter"
+    localport: 9187
+    action: allow
+    direction: in
+    protocol: tcp
+    enabled: yes
+    profiles: [Domain, Private, Public]

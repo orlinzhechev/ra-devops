@@ -1,0 +1,29 @@
+---
+# mssql_monitoring.yml - Playbook for MS SQL Server monitoring setup
+#
+# Prerequisites:
+# Before running this playbook, install the required collections:
+#   ansible-galaxy collection install -r requirements.yml
+#
+# How to use this playbook:
+#   ansible-playbook -i inventory.ini mssql_monitoring.yml
+#
+- name: Setup MS SQL Server monitoring
+  hosts: reconart_test_mssql_hosts
+  become: yes
+  become_user: administrator
+  vars:
+    ansible_user: administrator
+    ansible_ssh_private_key_file: ~/.ssh/bootstrap_rsa
+    ansible_connection: ssh
+    ansible_remote_tmp: C:\ansible_temp
+    ansible_shell_type: powershell
+    ansible_shell_executable: powershell
+    ansible_python_interpreter: C:\Python313\python.exe
+
+  tasks:
+    - name: Check access on MS SQL Server machines
+      win_ping:
+
+  roles:
+    - mssql_exporter

@@ -1,0 +1,14 @@
+---
+# MS SQL Server Exporter role main tasks file
+
+- name: Include Windows Exporter tasks
+  include_tasks: windows_exporter.yml
+
+- name: Include Node.js setup tasks
+  include_tasks: node_setup.yml
+
+- name: Enable TCP/IP connectivity on SQL Server
+  import_tasks: mssql_enable_tcp.yml
+
+- name: Include MS SQL Server Exporter tasks
+  include_tasks: mssql_exporter.yml

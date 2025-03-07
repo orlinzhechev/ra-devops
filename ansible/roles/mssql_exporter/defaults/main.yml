@@ -1,0 +1,11 @@
+---
+# MS SQL Server connection details for the exporter
+mssql_server: "127.0.0.1"
+mssql_port: 1433
+mssql_user: "sa"
+mssql_password: "Par0lata!"
+mssql_authentication: "sql"
+mssql_encrypt: false
+mssql_trust_server_certificate: false
+mssql_debug: "app,db,metrics,queries,errors"
+

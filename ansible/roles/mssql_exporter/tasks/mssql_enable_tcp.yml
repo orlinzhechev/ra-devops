@@ -1,0 +1,20 @@
+---
+# enable_tcp.yml - Enable TCP/IP connectivity for MS SQL Server
+
+- name: Enable TCP/IP protocol in the registry for SQL Server
+  win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQLServer\SuperSocketNetLib\Tcp
+    name: Enabled
+    data: 1
+    type: dword
+  notify: restart mssql_service
+
+- name: Debug current TCP/IP Enabled setting
+  win_shell: |
+    Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQLServer\SuperSocketNetLib\Tcp' -Name Enabled
+  register: tcp_status
+
+- name: Show TCP/IP setting result
+  debug:
+    var: tcp_status.stdout_lines
+

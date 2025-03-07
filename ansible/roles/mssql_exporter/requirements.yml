@@ -1,0 +1,4 @@
+---
+collections:
+  - name: community.windows
+    version: 1.12.0

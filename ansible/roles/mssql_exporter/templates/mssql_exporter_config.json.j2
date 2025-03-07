@@ -1,0 +1,26 @@
+{
+    "server": "{{ mssql_server | default('localhost') }}",
+    "port": {{ mssql_port | default(1433) }},
+    "user": "{{ mssql_user | default('sa') }}",
+    "password": "{{ mssql_password | default('') }}",
+    "encrypt": {{ mssql_encrypt | default(false) | lower }},
+    "trustServerCertificate": {{ mssql_trust_server_certificate | default(true) | lower }},
+    "debug": {{ mssql_debug | default(false) | lower }},
+    "instances": [
+        {
+            "name": "Default",
+            "query_timeout": 10,
+            "labels": {},
+            "collectors": [
+                "mssql.azure.resource_stats",
+                "mssql.buffer_manager",
+                "mssql.memory.clerks",
+                "mssql.os.performance",
+                "mssql.os.wait_stats",
+                "mssql.sql.errorsandwarnings",
+                "mssql.sql.query_stats",
+                "mssql.databases"
+            ]
+        }
+    ]
+}

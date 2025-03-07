@@ -1,0 +1,26 @@
+---
+# Install Windows Exporter for general system metrics
+- name: Install Windows Exporter using Chocolatey
+  win_chocolatey:
+    name: prometheus-windows-exporter.install
+    state: present
+  register: exporter_install
+
+- name: Wait for Windows Exporter service to start
+  win_service:
+    name: windows_exporter
+    state: started
+  register: exporter_service
+  until: exporter_service.state == "running"
+  retries: 5
+  delay: 5
+
+- name: Add firewall rule for Windows Exporter
+  win_firewall_rule:
+    name: "Windows Exporter"
+    localport: 9182
+    action: allow
+    direction: in
+    protocol: tcp
+    enabled: yes
+    profiles: [Domain, Private, Public]
