@@ -1,0 +1,21 @@
+---
+# Tasks to configure dynamic service discovery in Prometheus
+
+- name: Create directories for dynamic service discovery
+  file:
+    path: "/etc/prometheus/file_sd/{{ item }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+  with_items: "{{ prometheus_sd_directories }}"
+
+- name: Add dynamic scrape configurations
+  template:
+    src: "{{ item }}-scrape.yml.j2"
+    dest: "/etc/prometheus/scrape_configs/{{ item }}.yml"
+    owner: prometheus
+    group: prometheus
+    mode: 0644
+  with_items: "{{ prometheus_sd_directories }}"
+  notify: reload prometheus

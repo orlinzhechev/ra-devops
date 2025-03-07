@@ -7,6 +7,6 @@ scrape_configs:
       insecure_skip_verify: {{ artifactory_tls_skip_verify | default(false) }}
     static_configs:
       - targets:
-        - {{ artifactory_host }}
+        - {{ artifactory_server_name }}
         labels:
           instance: artifactory

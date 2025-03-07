@@ -1,5 +1,6 @@
 ---
 # artifactory_monitoring.yml - Tasks to configure Artifactory monitoring in Prometheus
+
 - name: Ensure Prometheus scrape_configs directory exists
   file:
     path: /etc/prometheus/scrape_configs

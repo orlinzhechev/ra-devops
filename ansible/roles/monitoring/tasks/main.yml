@@ -10,3 +10,6 @@
 
 - name: Include Artifactory monitoring tasks
   include_tasks: artifactory_monitoring.yml
+
+- name: Include dynamic monitoring tasks
+  include_tasks: dynamic_monitoring.yml

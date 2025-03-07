@@ -1,0 +1,7 @@
+- targets:
+  - 'mssql01.example.com:9187'  # SQL Server exporter typically uses port 9187
+  labels:
+    environment: test
+    role: database
+    db_type: mssql
+    component: reconart

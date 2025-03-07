@@ -1,0 +1,10 @@
+# Dynamic configuration for build nodes
+scrape_configs:
+  - job_name: 'build_nodes'
+    file_sd_configs:
+      - files:
+        - '/etc/prometheus/file_sd/build_nodes/*.yml'
+        refresh_interval: 5m
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance

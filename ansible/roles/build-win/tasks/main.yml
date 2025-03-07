@@ -34,3 +34,6 @@
 
 - name: Install additional tools
   include_tasks: tools.yml
+
+- name: Include Windows exporter setup tasks
+  include_tasks: windows_exporter.yml

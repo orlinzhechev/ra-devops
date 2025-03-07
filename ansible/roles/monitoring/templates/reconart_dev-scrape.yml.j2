@@ -1,0 +1,10 @@
+# Dynamic configuration for ReconArt dev environment
+scrape_configs:
+  - job_name: 'reconart_dev'
+    file_sd_configs:
+      - files:
+        - '/etc/prometheus/file_sd/reconart_dev/*.yml'
+        refresh_interval: 5m
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance

@@ -1,0 +1,7 @@
+- targets:
+  - 'build01.example.com:9182'
+  labels:
+    environment: dev
+    role: build
+    os: windows
+    team: devops

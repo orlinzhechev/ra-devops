@@ -1,2 +1,9 @@
 # Artifactory monitoring configuration
 artifactory_tls_skip_verify: false  # Set to true if using self-signed certificates
+
+# Dynamic service discovery directories
+prometheus_sd_directories:
+  - build_nodes
+  - reconart_dev
+  - reconart_test
+  - reconart_prod

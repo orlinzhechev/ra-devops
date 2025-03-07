@@ -21,18 +21,3 @@
   # This may fail on first run since prometheus user doesn't exist yet
   ignore_errors: yes
 
-# The Prometheus server will be installed directly from the playbook
-# This task just creates the necessary target directories
-
-- name: Create directories for target files
-  file:
-    path: "/etc/prometheus/targets/{{ item }}"
-    state: directory
-    owner: prometheus
-    group: prometheus
-    mode: 0755
-  with_items:
-    - nodes
-    - build
-    - jenkins
-    - artifactory
