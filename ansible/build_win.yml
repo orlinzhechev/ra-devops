@@ -71,5 +71,6 @@
       win_ping:
   roles:
     - common-win
+    - tools-win
     - swarm-win
 

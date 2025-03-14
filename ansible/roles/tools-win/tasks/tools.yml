@@ -1,2 +1,13 @@
 ---
+- name: Install Octopus CLI using Chocolatey
+  win_chocolatey:
+    name: octopustools
+    state: present
+
+- name: Install JFrog CLI using Chocolatey
+  win_chocolatey:
+    name: jfrog-cli
+    state: present
+
+
 
